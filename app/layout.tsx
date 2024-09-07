@@ -14,8 +14,8 @@ export const metadata: Metadata = {
 export default function RootLayout() {
     return (
         <html lang="en">
-            <body className={inter.className}>
-                <div className="flex">
+            <body>
+                <div className="app-container">
                     <Sidebar />
                     <div className="flex-1 ml-64">
                         <Note />
