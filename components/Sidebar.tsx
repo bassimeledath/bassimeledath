@@ -11,6 +11,7 @@ interface BlogPost {
     created_at: string;
     content: string;
     slug: string;
+    pinned: boolean;
 }
 
 export default function Sidebar() {
@@ -26,11 +27,21 @@ export default function Sidebar() {
         try {
             const { data, error } = await supabase
                 .from('blogs')
-                .select('id, title, created_at, content, slug')
-                .order('created_at', { ascending: false })
+                .select('id, title, created_at, content, slug, pinned')
 
             if (error) throw error;
-            setBlogPosts(data || []);
+
+            // Sort the posts: pinned first (ascending by date), then non-pinned (descending by date)
+            const sortedPosts = data?.sort((a, b) => {
+                if (a.pinned && !b.pinned) return -1;
+                if (!a.pinned && b.pinned) return 1;
+                if (a.pinned && b.pinned) {
+                    return new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
+                }
+                return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+            }) || [];
+
+            setBlogPosts(sortedPosts);
         } catch (error) {
             console.error('Error fetching blog posts:', error);
         }
