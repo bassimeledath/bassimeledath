@@ -1,10 +1,17 @@
 import React from 'react';
 
-export default function Note() {
+interface NoteProps {
+    title?: string;
+    content?: string;
+}
+
+export default function Note({ title, content }: NoteProps) {
     return (
         <div className="p-4">
-            <h2 className="text-2xl font-bold mb-4">Note</h2>
-            <p>This is a placeholder for the Note component.</p>
+            {title && <h1 className="text-2xl font-bold mb-4">{title}</h1>}
+            {content && (
+                <div dangerouslySetInnerHTML={{ __html: content }} />
+            )}
         </div>
     );
 }
