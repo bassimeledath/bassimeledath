@@ -10,7 +10,7 @@ interface PageProps {
 
 async function getPostBySlug(slug: string) {
     const { data, error } = await supabase
-        .from('blogs')
+        .from('blogs_tests')
         .select('title, content')
         .eq('slug', slug)
         .single();

@@ -1,7 +1,7 @@
 "use client"
 
 import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import { supabase } from '@/utils/supabase/client';
 import SidebarCard from '@/components/SidebarCard';
 
@@ -18,6 +18,7 @@ export default function Sidebar() {
     const [blogPosts, setBlogPosts] = useState<BlogPost[]>([]);
     const [selectedPostId, setSelectedPostId] = useState<string | null>(null);
     const router = useRouter();
+    const pathname = usePathname();
 
     useEffect(() => {
         fetchBlogPosts();
@@ -26,7 +27,7 @@ export default function Sidebar() {
     async function fetchBlogPosts() {
         try {
             const { data, error } = await supabase
-                .from('blogs')
+                .from('blogs_tests')
                 .select('id, title, created_at, content, slug, pinned')
 
             if (error) throw error;
@@ -40,8 +41,17 @@ export default function Sidebar() {
                 }
                 return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
             }) || [];
-
             setBlogPosts(sortedPosts);
+            console.log("blog posts set");
+
+            // Check if the current route is "/" and redirect to "/posts/about-me"
+            if (pathname === '/') {
+                const aboutMePost = sortedPosts.find(post => post.slug === 'about-me');
+                if (aboutMePost) {
+                    setSelectedPostId(aboutMePost.id);
+                    router.push('/posts/about-me');
+                }
+            }
         } catch (error) {
             console.error('Error fetching blog posts:', error);
         }
