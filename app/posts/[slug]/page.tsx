@@ -1,6 +1,10 @@
+'use client';
+
 import React from 'react';
+import { useRouter } from 'next/navigation';
 import { supabase } from '@/utils/supabase/client';
-import Note from '@/components/Note';
+import EditableNote from '@/components/EditableNote';
+import { useAuth } from '@/contexts/AuthContext';
 
 interface PageProps {
     params: {
@@ -19,16 +23,46 @@ async function getPostBySlug(slug: string) {
     return data;
 }
 
-export default async function PostPage({ params }: PageProps) {
-    const post = await getPostBySlug(params.slug);
+export default function PostPage({ params }: PageProps) {
+    const router = useRouter();
+    const [post, setPost] = React.useState<{ title: string; content: string } | null>(null);
+    const { isAuthenticated } = useAuth();
+
+    React.useEffect(() => {
+        getPostBySlug(params.slug).then(setPost);
+    }, [params.slug]);
+
+    const handleSave = async (title: string, content: string) => {
+        const { error } = await supabase
+            .from('blogs_tests')
+            .update({ title, content })
+            .eq('slug', params.slug);
+
+        if (error) {
+            console.error('Error updating post:', error);
+        } else {
+            setPost({ title, content });
+            router.refresh();
+        }
+    };
+
+    const handleCancel = () => {
+        // No need to do anything here, as the EditableNote component
+        // will reset its internal state when cancel is clicked
+    };
 
     if (!post) {
-        return <div>Post not found</div>;
+        return <div>Loading...</div>;
     }
 
     return (
         <main className="ml-64 flex-grow p-4">
-            <Note title={post.title} content={post.content} />
+            <EditableNote
+                title={post.title}
+                content={post.content}
+                onSave={handleSave}
+                onCancel={handleCancel}
+            />
         </main>
     );
 }
