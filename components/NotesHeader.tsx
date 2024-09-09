@@ -6,8 +6,8 @@ export default function NotesHeader() {
     const router = useRouter();
     const { isAuthenticated } = useAuth()
 
-    const handleIconClick = async () => {
-        console.log('User is authenticated. Implement your notes logic here.');
+    const handleIconClick = () => {
+        router.push('/posts/new');
     };
 
     return (

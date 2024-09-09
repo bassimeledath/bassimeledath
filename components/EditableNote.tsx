@@ -1,19 +1,25 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Note from './Note';
 import { useAuth } from '@/contexts/AuthContext';
 
 interface EditableNoteProps {
-    title: string;
-    content: string;
+    title?: string;
+    content?: string;
     onSave: (title: string, content: string) => Promise<void>;
     onCancel: () => void;
+    isNew?: boolean;
 }
 
-export default function EditableNote({ title: initialTitle, content: initialContent, onSave, onCancel }: EditableNoteProps) {
-    const [isEditing, setIsEditing] = useState(false);
+export default function EditableNote({ title: initialTitle = '', content: initialContent = '', onSave, onCancel, isNew = false }: EditableNoteProps) {
+    const [isEditing, setIsEditing] = useState(isNew);
     const [title, setTitle] = useState(initialTitle);
     const [content, setContent] = useState(initialContent);
     const { isAuthenticated } = useAuth();
+
+    useEffect(() => {
+        setTitle(initialTitle);
+        setContent(initialContent);
+    }, [initialTitle, initialContent]);
 
     const handleEdit = () => {
         setIsEditing(true);
@@ -21,7 +27,9 @@ export default function EditableNote({ title: initialTitle, content: initialCont
 
     const handleSave = async () => {
         await onSave(title, content);
-        setIsEditing(false);
+        if (!isNew) {
+            setIsEditing(false);
+        }
     };
 
     const handleCancel = () => {
@@ -33,7 +41,7 @@ export default function EditableNote({ title: initialTitle, content: initialCont
 
     return (
         <div className="relative">
-            {isAuthenticated && !isEditing && (
+            {isAuthenticated && !isEditing && !isNew && (
                 <button
                     onClick={handleEdit}
                     className="absolute top-0 right-0 px-4 py-2 bg-[#9e7c29] text-white rounded"
@@ -49,18 +57,20 @@ export default function EditableNote({ title: initialTitle, content: initialCont
                         value={title}
                         onChange={(e) => setTitle(e.target.value)}
                         className="w-full mb-4 p-2 border rounded"
+                        placeholder="Enter title"
                     />
                     <textarea
                         value={content}
                         onChange={(e) => setContent(e.target.value)}
                         className="w-full h-64 p-2 border rounded"
+                        placeholder="Enter content"
                     />
                     <div className="mt-4 flex justify-end space-x-4">
                         <button onClick={handleCancel} className="px-4 py-2 bg-gray-500 text-white rounded">
                             Cancel
                         </button>
                         <button onClick={handleSave} className="px-4 py-2 bg-[#9e7c29] text-white rounded">
-                            Publish
+                            {isNew ? 'Create' : 'Publish'}
                         </button>
                     </div>
                 </div>
