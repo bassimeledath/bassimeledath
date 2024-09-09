@@ -52,7 +52,7 @@ export default function PostPage({ params }: PageProps) {
     };
 
     if (!post) {
-        return <div>Loading...</div>;
+        return <div></div>;
     }
 
     return (
