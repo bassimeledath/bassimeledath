@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import { supabase } from '@/utils/supabase/client';
 import SidebarCard from '@/components/SidebarCard';
+import NotesHeader from '@/components/NotesHeader';
 
 interface BlogPost {
     id: string;
@@ -42,7 +43,6 @@ export default function Sidebar() {
                 return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
             }) || [];
             setBlogPosts(sortedPosts);
-            console.log("blog posts set");
 
             // Check if the current route is "/" and redirect to "/posts/about-me"
             if (pathname === '/') {
@@ -66,9 +66,9 @@ export default function Sidebar() {
     };
 
     return (
-        <aside className="w-64 h-screen fixed left-0 top-0 bg-[#2d211c] overflow-y-auto">
-            <div className="p-4">
-                <h2 className="text-xl font-bold text-gray-200 mb-4">Blog Posts</h2>
+        <aside className="w-64 h-screen fixed left-0 top-0 bg-[#2d211c] overflow-y-auto flex flex-col">
+            <NotesHeader />
+            <div className="p-4 flex-grow">
                 {blogPosts.map((post) => (
                     <SidebarCard
                         key={post.id}
