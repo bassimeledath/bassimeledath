@@ -11,7 +11,7 @@ export default function NotesHeader() {
     };
 
     return (
-        <div className="flex justify-between items-center p-4 bg-[#2d211c] text-white">
+        <div className="flex justify-between items-center p-4 pt-8 bg-[#2d211c] text-white">
             <span className="text-xl font-bold">Bassim's Notes</span>
             {isAuthenticated && (
                 <button onClick={handleIconClick} className="focus:outline-none">

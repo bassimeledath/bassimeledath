@@ -11,7 +11,7 @@ interface NoteProps {
 
 export default function Note({ title, content }: NoteProps) {
     return (
-        <div className="pl-6 pr-52 text-white min-h-screen">
+        <div className="pl-6 pr-52 pt-10 text-white min-h-screen">
             {title && <h1 className="text-3xl font-bold mb-6">{title}</h1>}
             {content && (
                 <div className="prose prose-invert prose-stone max-w-none">
