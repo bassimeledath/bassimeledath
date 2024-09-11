@@ -41,7 +41,7 @@ export default function NewPostPage() {
     }
 
     return (
-        <main className="ml-64 flex-grow p-4">
+        <main className="flex-grow p-4">
             <EditableNote
                 onSave={handleSave}
                 onCancel={handleCancel}
