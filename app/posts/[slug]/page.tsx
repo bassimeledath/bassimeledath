@@ -56,7 +56,7 @@ export default function PostPage({ params }: PageProps) {
     }
 
     return (
-        <main className="ml-64 flex-grow p-4">
+        <main className="flex-grow p-4">
             <EditableNote
                 title={post.title}
                 content={post.content}
