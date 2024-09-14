@@ -21,6 +21,15 @@ export default function Sidebar() {
     const router = useRouter();
     const pathname = usePathname();
 
+    const aboutMeNote: BlogPost = {
+        id: 'about-me',
+        title: '📌 About Me',
+        created_at: '1998-09-12T00:00:00Z',
+        slug: '',
+        pinned: true,
+        content: '', // Add this line
+    };
+
     useEffect(() => {
         fetchBlogPosts();
     }, []);
@@ -29,7 +38,7 @@ export default function Sidebar() {
         try {
             const { data, error } = await supabase
                 .from('blogs_tests')
-                .select('id, title, created_at, content, slug, pinned')
+                .select('id, title, created_at, slug, pinned, content')
 
             if (error) throw error;
 
@@ -42,16 +51,8 @@ export default function Sidebar() {
                 }
                 return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
             }) || [];
-            setBlogPosts(sortedPosts);
 
-            // Check if the current route is "/" and redirect to "/posts/about-me"
-            if (pathname === '/') {
-                const aboutMePost = sortedPosts.find(post => post.slug === 'about-me');
-                if (aboutMePost) {
-                    setSelectedPostId(aboutMePost.id);
-                    router.push('/posts/about-me');
-                }
-            }
+            setBlogPosts([aboutMeNote, ...sortedPosts]);
         } catch (error) {
             console.error('Error fetching blog posts:', error);
         }
@@ -59,9 +60,13 @@ export default function Sidebar() {
 
     const handleCardClick = (postId: string) => {
         setSelectedPostId(postId);
-        const post = blogPosts.find(post => post.id === postId);
-        if (post) {
-            router.push(`/posts/${post.slug}`);
+        if (postId === 'about-me') {
+            router.push('/');
+        } else {
+            const post = blogPosts.find(post => post.id === postId);
+            if (post) {
+                router.push(`/posts/${post.slug}`);
+            }
         }
     };
 

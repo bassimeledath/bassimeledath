@@ -1,9 +1,13 @@
 import React from 'react';
+import Note from '@/components/Note';
 
 export default function Home() {
   return (
-    <main>
-      <h1>Welcome to my Next.js app</h1>
+    <main className="pt-4 pl-4">
+      <Note
+        title="📌 About Me"
+        content="Hi I'm Bassim"
+      />
     </main>
   );
 }

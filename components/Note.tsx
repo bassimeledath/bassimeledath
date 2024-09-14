@@ -18,7 +18,7 @@ export default function Note({ title, content }: NoteProps) {
                     <ReactMarkdown
                         remarkPlugins={[remarkGfm]}
                         components={{
-                            code({ node, inline, className, children, ...props }) {
+                            code({ inline, className, children, ...props }: any) {
                                 const match = /language-(\w+)/.exec(className || '');
                                 return !inline && match ? (
                                     <SyntaxHighlighter
