@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import Note from './Note';
 import { useAuth } from '@/contexts/AuthContext';
+import { useNoteState } from '@/hooks/useNoteState';
 
 interface EditableNoteProps {
     title?: string;
@@ -11,31 +12,18 @@ interface EditableNoteProps {
 }
 
 export default function EditableNote({ title: initialTitle = '', content: initialContent = '', onSave, onCancel, isNew = false }: EditableNoteProps) {
-    const [isEditing, setIsEditing] = useState(isNew);
-    const [title, setTitle] = useState(initialTitle);
-    const [content, setContent] = useState(initialContent);
     const { isAuthenticated } = useAuth();
+    const { title, content, isEditing, setTitle, setContent, setIsEditing, reset } = useNoteState(initialTitle, initialContent, isNew);
 
-    useEffect(() => {
-        setTitle(initialTitle);
-        setContent(initialContent);
-    }, [initialTitle, initialContent]);
-
-    const handleEdit = () => {
-        setIsEditing(true);
-    };
+    const handleEdit = () => setIsEditing(true);
 
     const handleSave = async () => {
         await onSave(title, content);
-        if (!isNew) {
-            setIsEditing(false);
-        }
+        if (!isNew) setIsEditing(false);
     };
 
     const handleCancel = () => {
-        setTitle(initialTitle);
-        setContent(initialContent);
-        setIsEditing(false);
+        reset();
         onCancel();
     };
 

@@ -3,7 +3,6 @@
 import React from 'react';
 import { useRouter } from 'next/navigation';
 import EditableNote from '@/components/EditableNote';
-import { useAuth } from '@/contexts/AuthContext';
 import { usePost } from '@/hooks/usePost';
 
 interface PageProps {
@@ -14,7 +13,6 @@ interface PageProps {
 
 export default function PostPage({ params }: PageProps) {
     const router = useRouter();
-    const { isAuthenticated } = useAuth();
     const { post, isLoading, error, updatePost } = usePost(params.slug);
 
     const handleSave = async (title: string, content: string) => {
