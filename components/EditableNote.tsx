@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import Note from './Note';
 import { useAuth } from '@/contexts/AuthContext';
 import { useNoteState } from '@/hooks/useNoteState';
@@ -11,25 +11,36 @@ interface EditableNoteProps {
     isNew?: boolean;
 }
 
-export default function EditableNote({ title: initialTitle = '', content: initialContent = '', onSave, onCancel, isNew = false }: EditableNoteProps) {
+export default function EditableNote({
+    title: initialTitle = '',
+    content: initialContent = '',
+    onSave,
+    onCancel,
+    isNew = false
+}: EditableNoteProps) {
+
     const { isAuthenticated } = useAuth();
     const { title, content, isEditing, setTitle, setContent, setIsEditing, reset } = useNoteState(initialTitle, initialContent, isNew);
 
-    const handleEdit = () => setIsEditing(true);
+    const handleEdit = useCallback(() => setIsEditing(true), [setIsEditing]);
 
-    const handleSave = async () => {
+    const handleSave = useCallback(async () => {
+        if (!title.trim() || !content.trim()) return;
         await onSave(title, content);
         if (!isNew) setIsEditing(false);
-    };
+    }, [title, content, onSave, isNew]);
 
-    const handleCancel = () => {
+    const handleCancel = useCallback(() => {
         reset();
         onCancel();
-    };
+    }, [reset, onCancel]);
+
+    const showEditButton = isAuthenticated && !isEditing && !isNew;
+    const buttonClass = "px-4 py-2 rounded text-white";
 
     return (
         <div className="relative">
-            {isAuthenticated && !isEditing && !isNew && (
+            {showEditButton && (
                 <button
                     onClick={handleEdit}
                     className="absolute top-0 right-0 px-4 py-2 bg-[#9e7c29] text-white rounded"
@@ -54,10 +65,10 @@ export default function EditableNote({ title: initialTitle = '', content: initia
                         placeholder="Enter content"
                     />
                     <div className="mt-4 flex justify-end space-x-4">
-                        <button onClick={handleCancel} className="px-4 py-2 bg-gray-500 text-white rounded">
+                        <button onClick={handleCancel} className={`${buttonClass} bg-gray-500`}>
                             Cancel
                         </button>
-                        <button onClick={handleSave} className="px-4 py-2 bg-[#9e7c29] text-white rounded">
+                        <button onClick={handleSave} className={`${buttonClass} bg-[#9e7c29]`}>
                             {isNew ? 'Create' : 'Publish'}
                         </button>
                     </div>
