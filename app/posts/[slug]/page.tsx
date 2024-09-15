@@ -2,9 +2,8 @@
 
 import React from 'react';
 import { useRouter } from 'next/navigation';
-import { supabase } from '@/utils/supabase/client';
 import EditableNote from '@/components/EditableNote';
-import { useAuth } from '@/contexts/AuthContext';
+import { usePost } from '@/hooks/usePost';
 
 interface PageProps {
     params: {
@@ -12,37 +11,16 @@ interface PageProps {
     };
 }
 
-async function getPostBySlug(slug: string) {
-    const { data, error } = await supabase
-        .from('blogs_tests')
-        .select('title, content')
-        .eq('slug', slug)
-        .single();
-
-    if (error) throw error;
-    return data;
-}
-
 export default function PostPage({ params }: PageProps) {
     const router = useRouter();
-    const [post, setPost] = React.useState<{ title: string; content: string } | null>(null);
-    const { isAuthenticated } = useAuth();
-
-    React.useEffect(() => {
-        getPostBySlug(params.slug).then(setPost);
-    }, [params.slug]);
+    const { post, isLoading, error, updatePost } = usePost(params.slug);
 
     const handleSave = async (title: string, content: string) => {
-        const { error } = await supabase
-            .from('blogs_tests')
-            .update({ title, content })
-            .eq('slug', params.slug);
-
-        if (error) {
-            console.error('Error updating post:', error);
-        } else {
-            setPost({ title, content });
+        try {
+            await updatePost(title, content);
             router.refresh();
+        } catch (error) {
+            console.error('Error updating post:', error);
         }
     };
 
@@ -51,8 +29,16 @@ export default function PostPage({ params }: PageProps) {
         // will reset its internal state when cancel is clicked
     };
 
-    if (!post) {
+    if (isLoading) {
         return <div></div>;
+    }
+
+    if (error) {
+        return <div>Error: {error.message}</div>;
+    }
+
+    if (!post) {
+        return <div>Post not found</div>;
     }
 
     return (
