@@ -29,8 +29,9 @@ const useFetchBlogPosts = () => {
         const fetchData = async () => {
             try {
                 const { data, error } = await supabase
-                    .from('blogs_tests')
+                    .from('blogs')
                     .select('id, title, created_at, slug, pinned, content');
+                console.log(data);
 
                 if (error) throw error;
 

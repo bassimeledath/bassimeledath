@@ -16,7 +16,7 @@ export function usePost(slug: string) {
             try {
                 setIsLoading(true);
                 const { data, error } = await supabase
-                    .from('blogs_tests')
+                    .from('blogs')
                     .select('title, content')
                     .eq('slug', slug)
                     .single();
@@ -36,7 +36,7 @@ export function usePost(slug: string) {
     const updatePost = async (title: string, content: string) => {
         try {
             const { error } = await supabase
-                .from('blogs_tests')
+                .from('blogs')
                 .update({ title, content })
                 .eq('slug', slug);
 

@@ -10,6 +10,7 @@ export default function Sidebar() {
     const { blogPosts, loading, error } = useFetchBlogPosts();
     const [selectedPostId, setSelectedPostId] = useState<string | null>(null);
     const router = useRouter();
+    console.log(blogPosts);
 
     const handleCardClick = (postId: string) => {
         setSelectedPostId(postId); // Set the selected post ID here
