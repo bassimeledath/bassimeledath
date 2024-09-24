@@ -1,3 +1,4 @@
+import React from 'react';
 import type { Metadata } from "next";
 import "./globals.css";
 import Sidebar from "@/components/Sidebar";
@@ -6,6 +7,9 @@ import { AuthProvider } from '@/contexts/AuthContext';
 export const metadata: Metadata = {
     title: "Bassim's notes",
     description: "Bassim Eledath's blog",
+    icons: {
+        icon: '/favicon.png',
+    },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
