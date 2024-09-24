@@ -18,7 +18,7 @@ export default function Sidebar() {
         router.push(postId === 'about-me' ? '/' : `/posts/${post?.slug}`);
     };
 
-    if (loading) return <p>Loading...</p>;
+    if (loading) return null;
     if (error) return <p>{error}</p>;
 
     return (
