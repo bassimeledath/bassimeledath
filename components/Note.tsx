@@ -1,7 +1,8 @@
+// Note.tsx
 import React from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-import rehypeRaw from 'rehype-raw'; // Import rehype-raw
+import rehypeRaw from 'rehype-raw';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/cjs/styles/prism';
 
@@ -18,7 +19,7 @@ export default function Note({ title, content }: NoteProps) {
                 <div className="prose prose-invert prose-stone max-w-none">
                     <ReactMarkdown
                         remarkPlugins={[remarkGfm]}
-                        rehypePlugins={[rehypeRaw]} // Add rehype-raw to rehypePlugins
+                        rehypePlugins={[rehypeRaw]}
                         components={{
                             code({ inline, className, children, ...props }: any) {
                                 const match = /language-(\w+)/.exec(className || '');
@@ -30,10 +31,12 @@ export default function Note({ title, content }: NoteProps) {
                                                 ...vscDarkPlus['pre[class*="language-"]'],
                                                 backgroundColor: '#0f0f0f',
                                                 padding: '0',
+                                                fontSize: '16px', // Increase font size here
                                             },
                                             'code[class*="language-"]': {
                                                 ...vscDarkPlus['code[class*="language-"]'],
                                                 padding: '0',
+                                                fontSize: '16px', // Increase font size here
                                             },
                                         }}
                                         language={match[1]}
