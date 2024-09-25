@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import rehypeRaw from 'rehype-raw'; // Import rehype-raw
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/cjs/styles/prism';
 
@@ -17,6 +18,7 @@ export default function Note({ title, content }: NoteProps) {
                 <div className="prose prose-invert prose-stone max-w-none">
                     <ReactMarkdown
                         remarkPlugins={[remarkGfm]}
+                        rehypePlugins={[rehypeRaw]} // Add rehype-raw to rehypePlugins
                         components={{
                             code({ inline, className, children, ...props }: any) {
                                 const match = /language-(\w+)/.exec(className || '');
@@ -31,7 +33,7 @@ export default function Note({ title, content }: NoteProps) {
                                             },
                                             'code[class*="language-"]': {
                                                 ...vscDarkPlus['code[class*="language-"]'],
-                                                padding: '0', // Remove padding from code element
+                                                padding: '0',
                                             },
                                         }}
                                         language={match[1]}
@@ -52,12 +54,12 @@ export default function Note({ title, content }: NoteProps) {
                                         {...props}
                                         style={{
                                             maxWidth: '100%',
-                                            maxHeight: '400px', // Adjust this value as needed
-                                            objectFit: 'contain'
+                                            maxHeight: '400px',
+                                            objectFit: 'contain',
                                         }}
                                     />
                                 );
-                            }
+                            },
                         }}
                     >
                         {content}
