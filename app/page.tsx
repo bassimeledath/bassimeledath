@@ -2,6 +2,7 @@ import React from 'react';
 import Note from '@/components/Note';
 
 const content = `
+<br />
 <div style="display: flex; align-items: flex-start;">
   <div style="flex: 1;">
     <img src="/profile.png" alt="Profile Animation" style="max-width: 100%; height: auto;">
@@ -10,24 +11,19 @@ const content = `
     <pre><code class="language-python">
 class Bassim:
     def __init__(self):
-        self.occupation = 'Machine Learning Engineer'
-        self.skills = (
-            'Python',
-            'Machine Learning',
-            'A/B testing',
-            'Generative AI'
-        )
-        self.hobbies = (
-            '🏋️‍♂️ Powerlifting',
+        self.occupation = 'AI Engineer'
+        self.skills = [
+            'Generative AI',
+            'Machine/Deep Learning',
+            'Python, Typescript'
+        ]
+        self.hobbies = [
+            '👨🏾‍💻 Hackathons',
             '🌶️ Eating spicy food',
-            '🏓 Playing pickleball'
-        )
-        self.current_favorite_music_artists = (
-            "Takeshi's Cashew",
-            "Etran de L'Air",
-            'French79'
-        )
-        self.fun_fact = 'I grew up in Dubai!'
+            '🎧 Playlist curation'
+        ]
+        self.fun_fact = '''I can count to 20
+                      with my eyes closed'''
     </code></pre>
   </div>
 </div>

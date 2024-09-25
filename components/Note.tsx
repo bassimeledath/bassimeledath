@@ -35,12 +35,14 @@ export default function Note({ title, content }: NoteProps) {
                                                 ...vscDarkPlus['pre[class*="language-"]'],
                                                 backgroundColor: '#0f0f0f',
                                                 padding: '0',
-                                                fontSize: '16px', // Adjust font size if needed
+                                                fontSize: '16px',
+                                                margin: '0',
                                             },
                                             'code[class*="language-"]': {
                                                 ...vscDarkPlus['code[class*="language-"]'],
                                                 padding: '0',
-                                                fontSize: '16px', // Adjust font size if needed
+                                                fontSize: '16px',
+                                                margin: '0',
                                             },
                                         }}
                                         language={match[1]}
