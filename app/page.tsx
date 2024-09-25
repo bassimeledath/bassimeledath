@@ -5,7 +5,7 @@ import Note from '@/components/Note';
 const content = `
 <div style="display: flex; align-items: flex-start;">
   <div style="flex: 1;">
-    <img src="https://github.com/bassimeledath/blog/blob/main/project_gifs/profile_animation.gif?raw=true" alt="Profile Animation" style="max-width: 100%; height: auto;">
+    <img src="/profile.png" alt="Profile Animation" style="max-width: 100%; height: auto;">
   </div>
   <div style="flex: 1; margin-left: 20px;">
     <pre><code class="language-python">
