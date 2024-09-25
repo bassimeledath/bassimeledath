@@ -30,7 +30,7 @@ export default function PostPage({ params }: PageProps) {
     };
 
     if (isLoading) {
-        return <div></div>;
+        return null;
     }
 
     if (error) {
