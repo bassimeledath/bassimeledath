@@ -21,6 +21,10 @@ export default function Note({ title, content }: NoteProps) {
                         remarkPlugins={[remarkGfm]}
                         rehypePlugins={[rehypeRaw]}
                         components={{
+                            // Custom renderer for links
+                            a: ({ node, ...props }) => (
+                                <a {...props} style={{ color: '#f7b530' }} />
+                            ),
                             code({ inline, className, children, ...props }: any) {
                                 const match = /language-(\w+)/.exec(className || '');
                                 return !inline && match ? (
@@ -31,12 +35,12 @@ export default function Note({ title, content }: NoteProps) {
                                                 ...vscDarkPlus['pre[class*="language-"]'],
                                                 backgroundColor: '#0f0f0f',
                                                 padding: '0',
-                                                fontSize: '16px', // Increase font size here
+                                                fontSize: '16px', // Adjust font size if needed
                                             },
                                             'code[class*="language-"]': {
                                                 ...vscDarkPlus['code[class*="language-"]'],
                                                 padding: '0',
-                                                fontSize: '16px', // Increase font size here
+                                                fontSize: '16px', // Adjust font size if needed
                                             },
                                         }}
                                         language={match[1]}
