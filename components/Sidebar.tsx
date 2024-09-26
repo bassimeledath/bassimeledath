@@ -10,7 +10,6 @@ export default function Sidebar() {
     const { blogPosts, loading, error } = useFetchBlogPosts();
     const [selectedPostId, setSelectedPostId] = useState<string | null>(null);
     const router = useRouter();
-    console.log(blogPosts);
 
     const handleCardClick = (postId: string) => {
         setSelectedPostId(postId); // Set the selected post ID here
@@ -18,7 +17,7 @@ export default function Sidebar() {
         router.push(postId === 'about-me' ? '/' : `/posts/${post?.slug}`);
     };
 
-    if (loading) return null;
+    //if (loading) return null;
     if (error) return <p>{error}</p>;
 
     return (

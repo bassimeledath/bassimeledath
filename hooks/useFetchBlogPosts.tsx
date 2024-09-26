@@ -31,7 +31,6 @@ const useFetchBlogPosts = () => {
                 const { data, error } = await supabase
                     .from('blogs')
                     .select('id, title, created_at, slug, pinned, content');
-                console.log(data);
 
                 if (error) throw error;
 
