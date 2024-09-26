@@ -19,7 +19,7 @@ export default function NewPostPage() {
         const slug = title.toLowerCase().replace(/[^\w\s-]/g, '').replace(/\s+/g, '-');
 
         const { data, error } = await supabase
-            .from('blogs_tests')
+            .from('blogs')
             .insert({ title, content, slug })
             .select()
             .single();
