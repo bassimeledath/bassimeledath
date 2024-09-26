@@ -13,7 +13,7 @@ class Bassim:
     def __init__(self):
         self.occupation = 'AI Engineer'
         self.skills = [
-            'Generative AI',
+            'Making LLM Applications',
             'Machine/Deep Learning',
             'Python, Typescript'
         ]
