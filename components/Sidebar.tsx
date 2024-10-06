@@ -5,10 +5,19 @@ import Link from 'next/link';
 import useFetchBlogPosts from '@/hooks/useFetchBlogPosts';
 import SidebarCard from '@/components/SidebarCard';
 import NotesHeader from '@/components/NotesHeader';
+import { usePathname } from 'next/navigation';
+import { useEffect } from 'react';
 
 export default function Sidebar() {
     const { blogPosts, loading, error } = useFetchBlogPosts();
     const [selectedPostId, setSelectedPostId] = useState<string | null>(null);
+    const pathname = usePathname();
+
+    useEffect(() => {
+        if (pathname === '/') {
+            setSelectedPostId('about-me');
+        }
+    }, [pathname]);
 
     if (error) return <p>{error}</p>;
 
