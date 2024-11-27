@@ -1,23 +1,24 @@
 "use client";
 
 import React, { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import useFetchBlogPosts from '@/hooks/useFetchBlogPosts';
 import SidebarCard from '@/components/SidebarCard';
 import NotesHeader from '@/components/NotesHeader';
+import { usePathname } from 'next/navigation';
+import { useEffect } from 'react';
 
 export default function Sidebar() {
     const { blogPosts, loading, error } = useFetchBlogPosts();
     const [selectedPostId, setSelectedPostId] = useState<string | null>(null);
-    const router = useRouter();
+    const pathname = usePathname();
 
-    const handleCardClick = (postId: string) => {
-        setSelectedPostId(postId); // Set the selected post ID here
-        const post = blogPosts.find(post => post.id === postId);
-        router.push(postId === 'about-me' ? '/' : `/posts/${post?.slug}`);
-    };
+    useEffect(() => {
+        if (pathname === '/') {
+            setSelectedPostId('about-me');
+        }
+    }, [pathname]);
 
-    //if (loading) return null;
     if (error) return <p>{error}</p>;
 
     return (
@@ -25,14 +26,19 @@ export default function Sidebar() {
             <NotesHeader />
             <div className="p-4 flex-grow">
                 {blogPosts.map((post) => (
-                    <SidebarCard
+                    <Link
                         key={post.id}
-                        id={post.id}
-                        title={post.title}
-                        createdAt={post.created_at}
-                        isSelected={post.id === selectedPostId} // Compare with selectedPostId
-                        onClick={handleCardClick} // Pass the onClick handler
-                    />
+                        href={post.id === 'about-me' ? '/' : `/posts/${post.slug}`}
+                        passHref
+                    >
+                        <SidebarCard
+                            id={post.id}
+                            title={post.title}
+                            createdAt={post.created_at}
+                            isSelected={post.id === selectedPostId}
+                            onClick={() => setSelectedPostId(post.id)}
+                        />
+                    </Link>
                 ))}
             </div>
         </aside>
