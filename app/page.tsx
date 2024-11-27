@@ -1,8 +1,5 @@
-'use client'
-
 import React from 'react';
 import Note from '@/components/Note';
-import MicrophoneButton from '@/components/MicrophoneButton';
 
 const content = `
 <br />
@@ -33,26 +30,12 @@ class Bassim:
 `;
 
 export default function Home() {
-  const assistantId = process.env.NEXT_PUBLIC_VAPI_ASSISTANT_ID;
-  const publicKey = process.env.NEXT_PUBLIC_VAPI_PUBLIC_KEY;
-
-  if (!assistantId || !publicKey) {
-    console.error('Missing VAPI environment variables');
-    return <div>Error: Missing VAPI configuration</div>;
-  }
-
   return (
     <main className="pt-4 pl-4">
       <Note
         title="📌 About Me"
         content={content}
       />
-      <div className="mt-4">
-        <MicrophoneButton
-          assistantId={assistantId}
-          publicKey={publicKey}
-        />
-      </div>
     </main>
   );
 }
