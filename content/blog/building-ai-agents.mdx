@@ -1,0 +1,98 @@
+---
+title: "Building AI Agents That Actually Work"
+description: "Lessons learned from building production-grade AI agents — from prompt engineering to tool orchestration."
+tags: ["AI", "LLM", "Agents"]
+---
+
+Over the past year, I've been building AI agents that go beyond demo-ware. Here's what I've learned about making them reliable enough for production.
+
+## The Problem with Demo Agents
+
+Most AI agent tutorials show you the happy path: a well-crafted prompt, a single tool call, and a perfect response. Real-world agents need to handle ambiguity, recover from errors, and operate within constraints.
+
+The gap between a demo and production is enormous. Here's a simple example of what a naive agent loop looks like:
+
+```python
+def agent_loop(task: str, tools: list[Tool]) -> str:
+    messages = [{"role": "user", "content": task}]
+
+    while True:
+        response = llm.chat(messages, tools=tools)
+
+        if response.tool_calls:
+            for call in response.tool_calls:
+                result = execute_tool(call)
+                messages.append({"role": "tool", "content": result})
+        else:
+            return response.content
+```
+
+This works for demos but falls apart in production. No error handling, no token limits, no timeout — just vibes.
+
+## Architecture That Scales
+
+A production agent needs three layers:
+
+### Planning Layer
+
+The planning layer decides **what** to do. This is where you get the most leverage from careful prompt engineering.
+
+Key considerations:
+- Break complex tasks into subtasks
+- Maintain a scratchpad for intermediate state
+- Know when to ask for clarification vs. making assumptions
+
+### Execution Layer
+
+The execution layer handles **how** to do it. This is where tool orchestration lives.
+
+```typescript
+interface ToolResult {
+  success: boolean;
+  data: unknown;
+  error?: string;
+}
+
+async function executeWithRetry(
+  tool: Tool,
+  params: Record<string, unknown>,
+  maxRetries: number = 3
+): Promise<ToolResult> {
+  for (let i = 0; i < maxRetries; i++) {
+    const result = await tool.execute(params);
+    if (result.success) return result;
+    // Exponential backoff
+    await sleep(Math.pow(2, i) * 1000);
+  }
+  return { success: false, data: null, error: "Max retries exceeded" };
+}
+```
+
+### Evaluation Layer
+
+The evaluation layer checks **whether it worked**. This is the most underrated part of agent design.
+
+> Building an agent without evaluation is like writing code without tests. It might work, but you'll never know when it breaks.
+
+## Practical Tips
+
+Here are the patterns that have worked best for me:
+
+1. **Start with the simplest thing that could work.** Add complexity only when you have evidence it's needed.
+2. **Log everything.** Agent debugging is 10x harder without detailed traces.
+3. **Set hard limits** on token usage, API calls, and wall-clock time.
+4. **Use structured outputs** whenever possible — JSON mode or function calling.
+
+## What's Next
+
+The agent landscape is evolving fast. I'm particularly excited about:
+
+- **Multi-agent orchestration** — specialized agents collaborating on complex tasks
+- **Memory systems** — giving agents persistent context across sessions
+- **Better evaluation frameworks** — automated testing for non-deterministic systems
+
+If you're building agents, I'd love to hear what patterns are working for you.
+
+<div style={{padding: "16px", background: "#f0f0ee", borderRadius: "8px", marginTop: "24px"}}>
+  <strong>Related:</strong> Check out my <a href="/projects">projects page</a> for agent implementations you can reference.
+</div>
