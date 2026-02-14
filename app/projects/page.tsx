@@ -16,15 +16,17 @@ export default function ProjectsPage() {
             className="group rounded-lg border border-border p-6 transition-colors hover:border-muted"
           >
             {project.image ? (
-              <Image
-                src={project.image}
-                alt={project.title}
-                width={400}
-                height={200}
-                className="mb-4 rounded-md object-cover"
-              />
+              <div className="relative mb-4 h-48 w-full overflow-hidden rounded-md">
+                <Image
+                  src={project.image}
+                  alt={project.title}
+                  fill
+                  className="object-cover"
+                  unoptimized={project.image.endsWith(".gif")}
+                />
+              </div>
             ) : (
-              <div className="mb-4 h-32 rounded-md bg-[#f0f0ee]" />
+              <div className="mb-4 h-48 rounded-md bg-[#f0f0ee]" />
             )}
             <h2 className="font-serif text-lg font-medium text-foreground">
               {project.title}
