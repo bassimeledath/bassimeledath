@@ -1,4 +1,5 @@
 import Link from "next/link";
+import ThemeToggle from "@/components/ThemeToggle";
 
 export default function Header() {
   return (
@@ -6,13 +7,14 @@ export default function Header() {
       <Link href="/" className="font-serif text-xl font-medium text-foreground">
         Bassim Eledath
       </Link>
-      <nav className="flex gap-6 text-sm text-muted">
+      <nav className="flex items-center gap-6 text-sm text-muted">
         <Link href="/" className="transition-colors hover:text-foreground">
           About
         </Link>
         <Link href="/blog" className="transition-colors hover:text-foreground">
           Blog
         </Link>
+        <ThemeToggle />
       </nav>
     </header>
   );

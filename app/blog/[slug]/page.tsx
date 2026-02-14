@@ -69,7 +69,7 @@ export default function BlogPostPage({ params }: Props) {
               {post.tags.map((tag) => (
                 <span
                   key={tag}
-                  className="rounded-full bg-[#f0f0ee] px-2.5 py-0.5 text-xs text-muted"
+                  className="rounded-full bg-[rgb(var(--tag-bg))] px-2.5 py-0.5 text-xs text-muted"
                 >
                   {tag}
                 </span>

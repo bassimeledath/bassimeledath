@@ -3,6 +3,7 @@ import { Instrument_Sans, Newsreader, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import { ThemeProvider } from "@/components/ThemeProvider";
 
 const instrumentSans = Instrument_Sans({
   subsets: ["latin"],
@@ -32,13 +33,16 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html
       lang="en"
       className={`${instrumentSans.variable} ${newsreader.variable} ${jetbrainsMono.variable}`}
+      suppressHydrationWarning
     >
       <body className="font-sans">
-        <div className="mx-auto max-w-[1200px] px-6">
-          <Header />
-          <main className="min-h-[calc(100vh-200px)]">{children}</main>
-          <Footer />
-        </div>
+        <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
+          <div className="mx-auto max-w-[1200px] px-6">
+            <Header />
+            <main className="min-h-[calc(100vh-200px)]">{children}</main>
+            <Footer />
+          </div>
+        </ThemeProvider>
       </body>
     </html>
   );

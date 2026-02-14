@@ -10,8 +10,11 @@ export const rehypePlugins = [
   [
     rehypePrettyCode,
     {
-      theme: "github-light",
-      keepBackground: true,
+      theme: {
+        light: "github-light",
+        dark: "github-dark",
+      },
+      keepBackground: false,
     },
   ],
   [

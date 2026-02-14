@@ -28,7 +28,7 @@ export const mdxComponents: MDXComponents = {
     return (
       <a
         {...props}
-        className="text-foreground underline decoration-[#d4c5b0] underline-offset-[3px] transition-[text-decoration-color] duration-200 hover:decoration-accent"
+        className="text-foreground underline decoration-[rgb(var(--link-underline))] underline-offset-[3px] transition-[text-decoration-color] duration-200 hover:decoration-accent"
         {...(isExternal ? { target: "_blank", rel: "noopener noreferrer" } : {})}
       />
     );

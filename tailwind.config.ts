@@ -1,6 +1,7 @@
 import type { Config } from "tailwindcss";
 
 const config: Config = {
+  darkMode: "class",
   content: [
     "./pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
@@ -9,11 +10,11 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        background: "#fafaf8",
-        foreground: "#1a1a1a",
-        muted: "#6b6b6b",
-        border: "#e5e5e3",
-        accent: "#b45309",
+        background: "rgb(var(--background) / <alpha-value>)",
+        foreground: "rgb(var(--foreground) / <alpha-value>)",
+        muted: "rgb(var(--muted) / <alpha-value>)",
+        border: "rgb(var(--border) / <alpha-value>)",
+        accent: "rgb(var(--accent) / <alpha-value>)",
       },
       fontFamily: {
         sans: ["var(--font-sans)", "system-ui", "sans-serif"],
@@ -29,26 +30,26 @@ const config: Config = {
             maxWidth: "72ch",
             lineHeight: "1.8",
             fontSize: "17px",
-            color: "#1a1a1a",
+            color: "rgb(var(--foreground))",
             "h1, h2, h3, h4": {
               fontFamily: "var(--font-serif)",
               letterSpacing: "-0.025em",
-              color: "#1a1a1a",
+              color: "rgb(var(--foreground))",
             },
             h2: {
               marginTop: "2.5em",
             },
             a: {
-              color: "#1a1a1a",
-              textDecorationColor: "#d4c5b0",
+              color: "rgb(var(--foreground))",
+              textDecorationColor: "rgb(var(--link-underline))",
               textUnderlineOffset: "3px",
               transition: "text-decoration-color 0.2s ease",
               "&:hover": {
-                textDecorationColor: "#b45309",
+                textDecorationColor: "rgb(var(--accent))",
               },
             },
             code: {
-              backgroundColor: "#f5f5f3",
+              backgroundColor: "rgb(var(--code-bg))",
               padding: "0.2em 0.4em",
               borderRadius: "0.25rem",
               fontWeight: "400",
@@ -60,13 +61,13 @@ const config: Config = {
               padding: "0",
             },
             pre: {
-              backgroundColor: "#f5f5f3",
+              backgroundColor: "rgb(var(--code-bg))",
               borderRadius: "0.5rem",
             },
             blockquote: {
               fontStyle: "normal",
               borderLeftWidth: "3px",
-              borderLeftColor: "#e5e5e3",
+              borderLeftColor: "rgb(var(--border))",
             },
             img: {
               borderRadius: "0.5rem",
