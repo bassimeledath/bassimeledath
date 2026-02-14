@@ -9,24 +9,51 @@ export interface Project {
 
 export const projects: Project[] = [
   {
-    title: "AI Code Review Bot",
+    title: "quizhp.com",
     description:
-      "An automated code review tool powered by LLMs that provides contextual feedback on pull requests.",
-    tags: ["Python", "LLM", "GitHub API"],
-    github: "https://github.com/bassimeledath",
+      "Turn any document into interactive mini-games.",
+    image: "/images/projects/quizhp.gif",
+    link: "https://quizhp.com",
+    tags: ["Next.js", "AI", "EdTech"],
   },
   {
-    title: "Semantic Search Engine",
+    title: "Vocabulous",
     description:
-      "Full-stack semantic search over documents using embeddings, vector databases, and a Next.js frontend.",
-    tags: ["TypeScript", "Pinecone", "Next.js"],
-    github: "https://github.com/bassimeledath",
+      "Learn new vocabulary words each time you open a new tab.",
+    image: "/images/projects/vocabulous.gif",
+    link: "https://chromewebstore.google.com/detail/vocabulous/gjpigkglfnoibilkjhcoihdjgmappbch",
+    tags: ["Chrome Extension", "AI", "EdTech"],
   },
   {
-    title: "Voice-to-Action Agent",
+    title: "AristoBites",
     description:
-      "A voice-controlled AI agent that converts natural language commands into executable workflows.",
-    tags: ["Python", "VAPI", "LangChain"],
-    github: "https://github.com/bassimeledath",
+      "AI-generated bite-sized philosophy videos with talking head narration.",
+    image: "/images/projects/aristobites.gif",
+    link: "https://youtu.be/1DLaAVLr9Ks",
+    github: "https://github.com/bassimeledath/aristo_bites",
+    tags: ["Python", "AI", "Video Generation"],
+  },
+  {
+    title: "Le Khan Académie",
+    description:
+      "Text prompt to Khan Academy-style animated education videos.",
+    image: "/images/projects/le-khan-academie.gif",
+    link: "https://youtube.com/watch?v=73aglFxOqew",
+    tags: ["Python", "AI", "Animation"],
+  },
+  {
+    title: "Naturrate",
+    description:
+      "Give any video David Attenborough-style narration.",
+    image: "/images/projects/naturrate.png",
+    github: "https://github.com/bassimeledath/naturrate",
+    tags: ["Python", "AI", "Audio"],
+  },
+  {
+    title: "MSDS New Tab",
+    description:
+      "USF MSDS new tab with quick links, AI papers, and SF events.",
+    image: "/images/projects/msds-newtab.gif",
+    tags: ["Chrome Extension", "React"],
   },
 ];
