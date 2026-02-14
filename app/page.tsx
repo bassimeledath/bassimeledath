@@ -62,9 +62,7 @@ export default function HomePage() {
               Weaver of LLMs, Tamer of Hallucinations, Lord of the Context Window, He Who Ships.
             </p>
             <p>
-              When I&apos;m not coding, you&apos;ll find me at hackathons, eating
-              unreasonably spicy food, or curating playlists. I can also count to 20
-              with my eyes closed.
+              I eat aggressively spicy food, can't sit still when music is playing, and have never once arrived somewhere without Google Maps.
             </p>
           </div>
         </div>
