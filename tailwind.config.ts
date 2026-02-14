@@ -52,12 +52,19 @@ const config: Config = {
               },
             },
             code: {
+              color: "rgb(var(--foreground))",
               backgroundColor: "rgb(var(--code-bg))",
               padding: "0.2em 0.4em",
               borderRadius: "0.25rem",
               fontWeight: "400",
               "&::before": { content: "none" },
               "&::after": { content: "none" },
+            },
+            "ol > li::marker": {
+              color: "rgb(var(--muted))",
+            },
+            "ul > li::marker": {
+              color: "rgb(var(--muted))",
             },
             "pre code": {
               backgroundColor: "transparent",
@@ -69,6 +76,7 @@ const config: Config = {
             },
             blockquote: {
               fontStyle: "normal",
+              color: "rgb(var(--foreground))",
               borderLeftWidth: "3px",
               borderLeftColor: "rgb(var(--border))",
             },
