@@ -14,6 +14,7 @@ export const projects: Project[] = [
       "Turn any document into interactive mini-games.",
     image: "/images/projects/quizhp.gif",
     link: "https://quizhp.com",
+    github: "https://github.com/Hunch-AI/quizhp",
     tags: ["Next.js", "AI", "EdTech"],
   },
   {
@@ -22,6 +23,7 @@ export const projects: Project[] = [
       "Learn new vocabulary words each time you open a new tab.",
     image: "/images/projects/vocabulous.gif",
     link: "https://chromewebstore.google.com/detail/vocabulous/gjpigkglfnoibilkjhcoihdjgmappbch",
+    github: "https://github.com/Hunch-AI/vocabulous",
     tags: ["Chrome Extension", "AI", "EdTech"],
   },
   {
