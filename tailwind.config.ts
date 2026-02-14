@@ -36,6 +36,9 @@ const config: Config = {
               letterSpacing: "-0.025em",
               color: "rgb(var(--foreground))",
             },
+            strong: {
+              color: "rgb(var(--foreground))",
+            },
             h2: {
               marginTop: "2.5em",
             },

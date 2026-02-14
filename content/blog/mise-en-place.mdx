@@ -1,0 +1,185 @@
+---
+title: "Mise en Place"
+description: "Five principles from professional kitchens that changed how I prompt coding agents."
+tags: ["AI", "Agents", "Engineering"]
+---
+
+In professional kitchens, the thing that separates a cook who can handle 300 covers from one who drowns at 30 isn't talent or speed. It's preparation.
+
+They call it *mise en place* — French for "everything in its place." Before the first ticket fires, every ingredient is prepped, every sauce reduced, every tool within arm's reach. There is zero friction between decision and execution. The work before the work is the actual work.
+
+This post isn't about cooking.
+
+The single biggest predictor of whether a coding agent gives me clean, working code or a hallucinated mess isn't the model, the IDE, or the token budget. It's whether I've done my mise en place before I start prompting. Five principles from the professional kitchen map perfectly onto agentic engineering — and once you see the parallel, you can't unsee it.
+
+## Read the Recipe
+
+A chef reads the entire recipe before cracking a single egg. Not because they don't know how to crack eggs — because they need to know the timeline. Does the dough rest for an hour? Does the sauce reduce while the protein sears? If you don't read ahead, you'll find yourself waiting on dough to rise at 10pm with a dining room full of hungry people.
+
+Most developers skip this step entirely. They open a chat and immediately ask for implementation. That's the equivalent of throwing onions into a cold pan because you didn't read far enough to see "bring oil to 375°F first."
+
+**Before asking the agent to build, ask it to explore.**
+
+A single exploration prompt surfaces the architecture, patterns, and conventions that will make every subsequent prompt precise:
+
+```
+Across the app, find keyboard event handlers implementing
+shortcuts. List key combos and what they do.
+```
+
+This costs one prompt and saves five. You now have the vocabulary to say "do it like the existing shortcut handler in `KeyboardManager.ts`" instead of describing the pattern from scratch.
+
+A few techniques that work in the explore phase:
+
+- **Ask for a bird's-eye map first.** On large codebases, start with something like: *"Draw a high-level package graph for payments-service and list key entry points."* You can't give precise directions without a map.
+
+- **Find by visual description.** You don't need to know the component name. *"In the UI, at the bottom of the right column there are links: Feedback, Privacy, Terms, Help. Where is the code that renders these?"* The agent will find it.
+
+- **Separate explore and implement into two prompts.** Unless the task is truly trivial, they're distinct phases. *"First: identify the existing dialog component pattern and where footer links are defined. Second: implement the link + dialog using that pattern."*
+
+- **Ask for canonical examples.** *"Identify recurring patterns for data fetching in this codebase and provide one canonical in-repo example per pattern."* Now every future prompt can say "do it like X" instead of explaining the pattern from zero.
+
+The recipe is the codebase. Read it before you cook.
+
+## Prep Your Station
+
+On a line cook's station, the shallots are minced, the butter is cubed, the sauces are in squeeze bottles at arm's reach. When a ticket fires, there is zero friction between decision and execution. The cook doesn't stop to dice an onion — the onion was diced an hour ago.
+
+For coding agents, your "station" is context. An agent with no context is like a line cook staring at an empty cutting board: talented, fast, and completely stuck.
+
+**Treat the agent like a senior contract engineer on their first day.** They're experienced. They're skilled. They know nothing about your codebase. Give them what they'd actually need:
+
+```
+I'm new to this codebase but experienced with React.
+I need to ship a small UI setting change this week.
+Explain relevant parts in "diff form" and point to
+canonical examples.
+```
+
+Different tasks need different prep:
+
+- **For debugging** — provide repro steps, logs, and what you've already tried. *"Bug: checkout sometimes hangs. Repro: add 3+ items, click pay. Logs: [attached]. Hypotheses tried: race condition in cart state. Diagnose root cause and propose the smallest fix."*
+
+- **For implementation** — include entry points, patterns to follow, and snippets. *"Entry point: SettingsPanel.tsx. Pattern to follow: ToggleSettingRow used for Autoplay. Add a new toggle using the same pattern for video looping."*
+
+- **For research** — provide a baseline and a target. *"Current p95 latency is 800ms; target is under 200ms. Compare approaches and call out expected impact."*
+
+One more form of prep most people miss: **scaffolding.** Before asking for full implementation, have the agent lay down the skeleton — blank interfaces, empty components, route stubs:
+
+```
+Define TypeScript interfaces for User, Product, and Order
+with placeholder fields and TODO comments.
+```
+
+Now later prompts can reference these types by name instead of describing them from scratch. The station is prepped. The cook can fly.
+
+## Name the Dish
+
+A kitchen ticket never says "make something delicious." It says:
+
+> Seared salmon. Medium-rare. Seasonal veg. No dairy. Table 12.
+
+Every word is load-bearing. "Seared" is the method — not "cook," not "prepare." "Medium-rare" is a measurable constraint. "No dairy" is an explicit exclusion. "Table 12" is the placement. The kitchen doesn't interpret the ticket. The kitchen executes it.
+
+**Your prompt is a ticket. Write it like one.**
+
+The formula is **Verb + Constraints + Context.** The verb determines the contract — don't say "fix" if you mean "diagnose," don't say "update" if you mean "replace."
+
+```
+❌  Make this SQL query faster.
+
+✅  Optimize this SQL query to reduce execution time
+    from ~2s to under 500ms without changing results.
+```
+
+The first is a wish. The second is a ticket. The difference: the verb is precise ("optimize," not "make faster"), the constraint is measurable ("under 500ms," not "faster"), and the scope is bounded ("without changing results").
+
+Rules for writing good tickets:
+
+**Make success criteria explicit.** Don't let the model fill gaps with assumptions. *"Add a setting 'Play videos on repeat' (default ON). If OFF, videos stop at end. If ON, videos loop to start."* The agent now knows exactly when the dish is done.
+
+**State what not to do.** Models are eager helpers — they'll add error handling you didn't ask for, refactor adjacent code, "improve" things proactively. Be explicit: *"Pause videos when the composer opens. Do not add logic to resume playback when the composer closes."*
+
+**Replace vague statements with behavioral contracts.** Not "handle the video situation" but: *"When the composer opens: pause every HTMLVideoElement that is currently playing."* The kitchen doesn't need to interpret. It executes.
+
+**Specify placement.** Generic prompts produce generic output. *"Create a new link 'Shortcuts' in the same style as 'Help' and positioned to the right of it with the same spacing."* Tell the agent where on the plate the garnish goes.
+
+## Cook One Plate
+
+A line cook doesn't prepare the entire night's service at once. They don't fire all 47 tickets simultaneously and hope for the best. They work one plate at a time, because quality collapses the moment attention splits.
+
+**Right-size each prompt to the largest thing the agent can reliably complete well.**
+
+This is a judgment call, and it takes practice. But there are clear signals.
+
+**Go one-shot when the scope is obvious:**
+
+```
+In the code path that opens the post composer, pause any
+videos currently playing on the page. No need to resume
+them later.
+```
+
+Single verb. Single behavior. No ambiguity. Fire and serve.
+
+**Break it down when you see warning signs** — multiple action verbs ("explore AND implement"), creative decisions you want to vet, or anything that feels like a "big PR." When that happens, decompose:
+
+```
+Break this project into 3-5 self-contained chunks
+(each shippable). Order by dependencies and explain why.
+```
+
+A few principles for plate-sizing:
+
+- **Avoid too-tiny steps that create overhead.** *(Too tiny)* "Find the file. Now find the function. Now change one line." *(Better)* "Locate where the composer is opened and add a step that pauses all playing videos." Give the agent enough room to cook.
+
+- **Cap at 2–3 actions per prompt.** *(1) Find how settings are modeled and rendered. (2) Add a toggle labeled "Play videos on repeat" (default ON). (3) Wire it to the video end-of-playback behavior.* Three actions. One plate.
+
+- **Order by dependencies.** Storage and state changes come before UI wiring. UI wiring comes before refactors. The dough rests before it bakes.
+
+The goal isn't the fewest prompts or the most. It's the right-sized prompts — each one a complete plate the agent can cook to done.
+
+## Taste Before Serving
+
+No chef sends a dish to the dining room without tasting it. The taste is the final checkpoint that catches what the recipe and prep couldn't predict. Maybe the seasoning shifted. Maybe the reduction went too far. You don't know until the spoon hits your tongue.
+
+The most common failure mode in agentic coding isn't that the agent writes bad code. It's that you *accept* the output without checking because it looks right. Tasting is the discipline of demanding proof.
+
+**Design prompts that force verifiable artifacts:**
+
+```
+List all keyboard shortcuts: include the file path and the
+exact key combination handled in each case.
+```
+
+File paths are checkable. Key combinations are checkable. "The code looks good" is not.
+
+**Invite doubt.** Agents are agreeable by default — they'll confidently endorse a false premise if you hand them one. Phrase prompts that make "no" a valid answer: *"Is there an existing patch that fixes this error? If none exists, explain why and what the real culprit might be."*
+
+**Demand evidence, not conclusions.** *"For each claim, cite the log line, stack trace, or code location that supports it. If evidence is missing, say so."* If the agent can't cite sources, the dish might be garnished but empty inside.
+
+**Use tests as your palate.** TDD is mise en place for verification. Ask the agent to write tests before implementation — they become a concrete spec you can evaluate before any code ships: *"Don't implement yet. Create failing tests that fully specify the desired behavior for the new setting."*
+
+**Ask for structured reviews.** When checking agent output, demand a format you can actually parse: *"Review this diff for style issues, insecure calls, and deviations from our established patterns. End with: Approve / Approve with nits / Request changes — and the top 3 reasons."* Structured output is tasteable. "Looks good to me" is not.
+
+## Everything in Its Place
+
+Mise en place isn't five steps on a checklist. It's a state of mind. It's the belief that the work before the work *is* the work.
+
+A chef who practices mise en place doesn't think about it as a process. It's simply how they operate. The station is prepped because of course it is. The ticket is specific because a vague ticket is a failed dish. They taste because sending untasted food is unthinkable.
+
+The same shift happens with prompting. Once these five principles become instinct, you stop thinking of them as steps and start thinking of them as the way you work:
+
+1. **Read the recipe.** Explore the codebase before you build.
+2. **Prep your station.** Load context and scaffold the skeleton.
+3. **Name the dish.** Verb + Constraints + Context. Every word load-bearing.
+4. **Cook one plate.** Right-size the request. One plate to done.
+5. **Taste before serving.** Verify with evidence, tests, and structure.
+
+Before every prompt, you can ask: *did I read the recipe? Is my station prepped? Is the dish named? Is it one plate? Will I taste it?*
+
+If the answer to any of those is no, you're about to send back a bad dish.
+
+The next time you open a chat with a coding agent, don't start typing. Start prepping.
+
+*Mise en place.*
