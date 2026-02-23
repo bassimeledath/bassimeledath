@@ -4,9 +4,10 @@ import rehypePrettyCode from "rehype-pretty-code";
 import rehypeAutolinkHeadings from "rehype-autolink-headings";
 import { visit } from "unist-util-visit";
 import { toString } from "hast-util-to-string";
+import type { Node } from "unist";
 
 function rehypeMermaid() {
-  return (tree: unknown) => {
+  return (tree: Node) => {
     visit(tree, "element", (node: any, index: number, parent: any) => {
       if (node.tagName !== "pre") return;
       const code = node.children?.[0];
