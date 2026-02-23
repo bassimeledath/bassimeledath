@@ -9,6 +9,15 @@ export interface Project {
 
 export const projects: Project[] = [
   {
+    title: "Dispatch",
+    description:
+      "A Claude Code skill that delegates work to background agents from a single session.",
+    image: "/images/projects/dispatch.png",
+    link: "/blog/dispatch",
+    github: "https://github.com/bassimeledath/dispatch",
+    tags: ["Claude Code", "AI", "Developer Tools"],
+  },
+  {
     title: "quizhp.com",
     description:
       "Turn any document into interactive mini-games.",

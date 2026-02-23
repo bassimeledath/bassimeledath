@@ -1,0 +1,127 @@
+---
+title: "I Built a Dispatcher Skill for Claude Code So I Can Stop Juggling 10 Terminals at Once"
+description: "AI coding isn't bottlenecked by model quality anymore. It's bottlenecked by human coordination. I built dispatch to fix that."
+tags: ["AI", "Claude Code", "Developer Tools"]
+---
+
+For a long time I felt on top of the world, constantly opening new terminal tabs, spinning up Claude Code instances to work on features, research tasks, one-off fixes. It felt like the pinnacle of vibe coding. Never skipping a beat. Feature X in one tab, feature Y in the next, product asks for a small change, open another tab.
+
+But then the models got better and faster.
+
+The number of tabs became unwieldy, and I hit the ultimate blocker: myself.
+
+I can reliably juggle maybe 3-4 active agent threads. Past that, I start forgetting. Not just what *I* was doing, but what context each model had. That is where the waste starts: re-explaining, duplicate work, loops.
+
+So I built `dispatch`: a Claude Code skill that delegates work to background agents and keeps my main session clean.
+
+The key thing is it is non-blocking. I dispatch a worker, and my terminal is immediately free again.
+
+## Let AI Handle the Delegation
+
+AI coding isn't bottlenecked by model quality anymore. It's bottlenecked by human coordination.
+
+Most of us are still doing manual orchestration:
+
+- open tab
+- copy context
+- assign task
+- check progress
+- answer question
+- repeat
+
+That does not scale. The right form factor now is: let AI handle most of the delegation while you stay in one command seat making product and engineering decisions.
+
+With Dispatch, you type `/dispatch "task"` and it handles the rest: plans the work as a checklist, spawns a background worker, tracks progress, and reports back. You never leave your session. The worker can be any model you have available across your CLI tools: Claude Code, Cursor, Codex.
+
+```
+/dispatch "do a security review of this project"
+```
+
+I've found it most useful for three things:
+
+- **Research in the middle of work.** You've hit a bug, there are several ways to fix it. Dispatch a research agent to do the analysis for you so you can decide.
+- **Cross-model review.** I love using Codex models to review Claude's work. You can dispatch multiple LLMs to review the same code and the dispatcher compiles findings across all of them.
+- **Parallel development.** Dispatch 3 agents in 3 different worktrees at the same time. It's seamless.
+
+## How it works
+
+Three design choices make this work:
+
+### Checklist-as-state
+
+The plan file IS the progress tracker. No databases, no signal files. Just a markdown checklist that the worker updates in place:
+
+```
+# Security Review
+- [x] Scan for hardcoded secrets
+- [x] Review auth logic
+- [ ] Check dependencies ← worker is here
+- [ ] Audit injection risks
+- [ ] Write findings report
+```
+
+You can `cat` it anytime. It's human-readable, debuggable, and git-friendly. That's the entire state management layer.
+
+### Filesystem IPC
+
+When a worker gets stuck, it shouldn't have to exit to ask you a question. Exiting means losing the entire context window. Instead, workers write questions to numbered files, a lightweight sentinel detects them and notifies the dispatcher, you answer, and the worker continues with full context preserved. No restart. No re-explaining.
+
+<Mermaid chart={`sequenceDiagram
+    participant Worker
+    participant FS as Filesystem IPC
+    participant Sentinel
+    participant Dispatcher
+    participant User
+
+    Worker->>Worker: Hits blocker
+    Worker->>FS: Writes 001.question (atomic)
+    Sentinel->>FS: Detects question
+    Sentinel->>Dispatcher: Exits (triggers notification)
+    Dispatcher->>User: Surfaces question
+    User->>Dispatcher: Provides answer
+    Dispatcher->>FS: Writes 001.answer (atomic)
+    Dispatcher->>Sentinel: Respawns sentinel
+    Worker->>FS: Detects answer, writes 001.done
+    Worker->>Worker: Continues (context preserved)`} />
+
+If no answer comes within 3 minutes, the worker gracefully dumps its context to a file and exits. The next worker picks up where it left off.
+
+### Model-agnostic routing
+
+Any CLI that accepts a prompt can be a worker. The config is model-centric. Adding a new model is one line:
+
+```yaml
+models:
+  opus:            { backend: claude }
+  sonnet:          { backend: claude }
+  gpt-5.3-codex:  { backend: codex }
+  gemini-3.1-pro:  { backend: cursor }
+```
+
+On first run, Dispatch auto-detects your installed CLIs, discovers available models, and generates the config. Zero manual YAML.
+
+## Getting started
+
+```shell
+npx skills add bassimeledath/dispatch -g
+```
+
+Then just:
+
+```
+/dispatch "refactor the auth module"
+```
+
+## From tool to workforce
+
+We're living through a rapid shift in how software gets built:
+
+- **2024:** AI as autocomplete
+- **2025:** AI as pair programmer
+- **2026:** AI as coordinated workforce
+
+The right form factor for working with AI today isn't you managing a dozen terminal tabs. It's letting AI handle the delegation too, because the models are genuinely that good now. One dispatcher, many workers, and you in the loop for the decisions that matter.
+
+Delegation is no longer a gimmick. It is becoming the interface.
+
+If you're drowning in terminal tabs, give it a shot.

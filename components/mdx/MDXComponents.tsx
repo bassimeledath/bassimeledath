@@ -1,7 +1,9 @@
 import Image from "next/image";
 import type { MDXComponents } from "mdx/types";
+import Mermaid from "./Mermaid";
 
 export const mdxComponents: MDXComponents = {
+  Mermaid,
   img: (props) => {
     const { src, alt, ...rest } = props as React.ImgHTMLAttributes<HTMLImageElement>;
     if (!src) return null;
