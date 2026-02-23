@@ -10,6 +10,7 @@ export default function Footer() {
             href="https://github.com/bassimeledath"
             target="_blank"
             rel="noopener noreferrer"
+            aria-label="GitHub profile"
             className="transition-colors hover:text-foreground"
           >
             <FaGithub size={18} />
@@ -18,6 +19,7 @@ export default function Footer() {
             href="https://linkedin.com/in/bassimeledath"
             target="_blank"
             rel="noopener noreferrer"
+            aria-label="LinkedIn profile"
             className="transition-colors hover:text-foreground"
           >
             <FaLinkedin size={18} />
@@ -26,6 +28,7 @@ export default function Footer() {
             href="https://x.com/bassimeledath"
             target="_blank"
             rel="noopener noreferrer"
+            aria-label="X (Twitter) profile"
             className="transition-colors hover:text-foreground"
           >
             <FaXTwitter size={18} />

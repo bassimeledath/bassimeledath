@@ -30,27 +30,29 @@ export default function TableOfContents({ headings }: { headings: Heading[] }) {
 
   return (
     <aside className="hidden toc:block w-[260px] flex-shrink-0">
-      <div className="sticky top-28">
-        <p className="text-xs font-medium uppercase tracking-wider text-muted">
-          On this page
-        </p>
-        <ul className="mt-3 space-y-2 text-sm">
-          {headings.map((heading) => (
-            <li key={heading.id} className={heading.level === 3 ? "pl-3" : ""}>
-              <a
-                href={`#${heading.id}`}
-                className={`block leading-snug transition-colors ${
-                  activeId === heading.id
-                    ? "text-foreground font-medium"
-                    : "text-muted hover:text-foreground"
-                }`}
-              >
-                {heading.text}
-              </a>
-            </li>
-          ))}
-        </ul>
-      </div>
+      <nav aria-label="Table of contents">
+        <div className="sticky top-28">
+          <p className="text-xs font-medium uppercase tracking-wider text-muted">
+            On this page
+          </p>
+          <ul className="mt-3 space-y-2 text-sm">
+            {headings.map((heading) => (
+              <li key={heading.id} className={heading.level === 3 ? "pl-3" : ""}>
+                <a
+                  href={`#${heading.id}`}
+                  className={`block leading-snug transition-colors ${
+                    activeId === heading.id
+                      ? "text-foreground font-medium"
+                      : "text-muted hover:text-foreground"
+                  }`}
+                >
+                  {heading.text}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </nav>
     </aside>
   );
 }

@@ -40,12 +40,12 @@ export function getAllPostSlugs(): string[] {
     .map((f) => f.replace(/\.mdx$/, ""));
 }
 
-export function getPostBySlug(slug: string): BlogPost {
+export function getPostBySlug(slug: string, dates?: BlogDates): BlogPost {
   const filePath = path.join(BLOG_DIR, `${slug}.mdx`);
   const raw = fs.readFileSync(filePath, "utf-8");
   const { data, content } = matter(raw);
-  const dates = loadDates();
-  const postDates = dates[slug] || {
+  const allDates = dates ?? loadDates();
+  const postDates = allDates[slug] || {
     published: new Date().toISOString(),
     modified: new Date().toISOString(),
   };
@@ -64,8 +64,9 @@ export function getPostBySlug(slug: string): BlogPost {
 
 export function getAllPosts(): BlogPost[] {
   const slugs = getAllPostSlugs();
+  const dates = loadDates();
   return slugs
-    .map((slug) => getPostBySlug(slug))
+    .map((slug) => getPostBySlug(slug, dates))
     .sort(
       (a, b) =>
         new Date(b.published).getTime() - new Date(a.published).getTime()

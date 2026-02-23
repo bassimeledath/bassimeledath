@@ -48,6 +48,12 @@
   }
 }
 
+/* Remove backtick pseudo-elements from inline code in prose */
+.prose :not(pre) > code::before,
+.prose :not(pre) > code::after {
+  content: none !important;
+}
+
 /* Shiki dual-theme support */
 html.dark .shiki,
 html.dark .shiki span {

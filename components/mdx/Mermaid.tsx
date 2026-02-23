@@ -10,6 +10,7 @@ interface MermaidProps {
 export default function Mermaid({ chart }: MermaidProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [svg, setSvg] = useState<string>("");
+  const [error, setError] = useState(false);
   const { resolvedTheme } = useTheme();
 
   useEffect(() => {
@@ -18,7 +19,7 @@ export default function Mermaid({ chart }: MermaidProps) {
       mermaid.initialize({
         startOnLoad: false,
         theme: resolvedTheme === "dark" ? "dark" : "neutral",
-        securityLevel: "loose",
+        securityLevel: "strict",
         sequence: {
           actorMargin: 50,
           messageMargin: 40,
@@ -33,13 +34,21 @@ export default function Mermaid({ chart }: MermaidProps) {
       try {
         const { svg } = await mermaid.render(id, chart);
         setSvg(svg);
-      } catch (e) {
-        console.error("Mermaid rendering failed:", e);
+      } catch {
+        setError(true);
       }
     };
 
     renderChart();
   }, [chart, resolvedTheme]);
+
+  if (error) {
+    return (
+      <div className="my-8 rounded-lg bg-[rgb(var(--code-bg))] p-6 text-center text-sm text-neutral-500">
+        Unable to render diagram.
+      </div>
+    );
+  }
 
   return (
     <div

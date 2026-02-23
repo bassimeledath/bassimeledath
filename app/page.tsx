@@ -6,6 +6,7 @@ import { projects } from "@/data/projects";
 export default function HomePage() {
   return (
     <div className="py-16">
+      <h1 className="sr-only">Bassim Eledath — AI Engineer</h1>
       {/* About */}
       <div className="flex flex-col gap-12 md:flex-row md:items-center">
         <div className="animate-fade-up flex-shrink-0">
@@ -33,6 +34,7 @@ export default function HomePage() {
               href="https://github.com/bassimeledath"
               target="_blank"
               rel="noopener noreferrer"
+              aria-label="GitHub profile"
               className="text-muted transition-colors hover:text-accent"
             >
               <FaGithub size={20} />
@@ -41,6 +43,7 @@ export default function HomePage() {
               href="https://linkedin.com/in/bassimeledath"
               target="_blank"
               rel="noopener noreferrer"
+              aria-label="LinkedIn profile"
               className="text-muted transition-colors hover:text-accent"
             >
               <FaLinkedin size={20} />
@@ -49,6 +52,7 @@ export default function HomePage() {
               href="https://x.com/bassimeledath"
               target="_blank"
               rel="noopener noreferrer"
+              aria-label="X (Twitter) profile"
               className="text-muted transition-colors hover:text-accent"
             >
               <FaXTwitter size={20} />
@@ -82,6 +86,7 @@ export default function HomePage() {
                     src={project.image}
                     alt={project.title}
                     fill
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                     className="object-cover transition-opacity group-hover:opacity-90"
                     unoptimized={project.image.endsWith(".gif")}
                   />
@@ -96,6 +101,7 @@ export default function HomePage() {
                     href={project.github}
                     target="_blank"
                     rel="noopener noreferrer"
+                    aria-label={`${project.title} GitHub repository`}
                     className="text-muted/50 transition-colors hover:text-foreground"
                   >
                     <FaGithub size={13} />
@@ -106,6 +112,7 @@ export default function HomePage() {
                     href={project.link}
                     target="_blank"
                     rel="noopener noreferrer"
+                    aria-label={`${project.title} external link`}
                     className="text-muted/50 transition-colors hover:text-foreground"
                   >
                     <FaExternalLinkAlt size={11} />

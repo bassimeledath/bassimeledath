@@ -1,3 +1,4 @@
+import { cache } from "react";
 import { notFound } from "next/navigation";
 import { MDXRemote } from "next-mdx-remote/rsc";
 import { getAllPostSlugs, getPostBySlug } from "@/lib/blog";
@@ -5,7 +6,10 @@ import { remarkPlugins, rehypePlugins } from "@/lib/mdx-options";
 import { extractHeadings } from "@/lib/extract-headings";
 import { mdxComponents } from "@/components/mdx/MDXComponents";
 import TableOfContents from "@/components/TableOfContents";
+import { formatDate } from "@/lib/utils";
 import type { Metadata } from "next";
+
+const getCachedPost = cache((slug: string) => getPostBySlug(slug));
 
 interface Props {
   params: { slug: string };
@@ -17,7 +21,7 @@ export function generateStaticParams() {
 
 export function generateMetadata({ params }: Props): Metadata {
   try {
-    const post = getPostBySlug(params.slug);
+    const post = getCachedPost(params.slug);
     return {
       title: `${post.title} — Bassim Eledath`,
       description: post.description,
@@ -27,18 +31,10 @@ export function generateMetadata({ params }: Props): Metadata {
   }
 }
 
-function formatDate(iso: string) {
-  return new Date(iso).toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  });
-}
-
 export default function BlogPostPage({ params }: Props) {
   let post;
   try {
-    post = getPostBySlug(params.slug);
+    post = getCachedPost(params.slug);
   } catch {
     notFound();
   }

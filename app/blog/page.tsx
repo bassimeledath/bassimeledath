@@ -1,14 +1,7 @@
 import Link from "next/link";
 import { FiArrowUpRight } from "react-icons/fi";
 import { getAllPosts } from "@/lib/blog";
-
-function formatDate(iso: string) {
-  return new Date(iso).toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  });
-}
+import { formatDate } from "@/lib/utils";
 
 function truncate(text: string, max: number) {
   if (text.length <= max) return text;
