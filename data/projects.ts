@@ -11,7 +11,7 @@ export const projects: Project[] = [
   {
     title: "Dispatch",
     description:
-      "A Claude Code skill that delegates work to background agents from a single session.",
+      "Dispatch multiple AI workers in parallel without blocking your session. The dispatcher tracks all of them for you.",
     image: "/images/projects/dispatch.png",
     link: "/blog/dispatch",
     github: "https://github.com/bassimeledath/dispatch",
