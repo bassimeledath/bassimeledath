@@ -22,10 +22,20 @@ export function generateStaticParams() {
 export function generateMetadata({ params }: Props): Metadata {
   try {
     const post = getCachedPost(params.slug);
-    return {
+    const metadata: Metadata = {
       title: `${post.title} — Bassim Eledath`,
       description: post.description,
     };
+    if (post.thumbnail) {
+      metadata.openGraph = {
+        images: [{ url: post.thumbnail }],
+      };
+      metadata.twitter = {
+        card: "summary_large_image",
+        images: [post.thumbnail],
+      };
+    }
+    return metadata;
   } catch {
     return { title: "Post Not Found" };
   }
