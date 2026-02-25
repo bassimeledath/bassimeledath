@@ -5,7 +5,7 @@ thumbnail: /images/blog/dispatch-hero.jpg
 tags: ["AI", "Claude Code", "Developer Tools"]
 ---
 
-![Dispatch: from terminal chaos to orchestrated calm](/images/blog/dispatch-hero.jpg)
+<DispatchComparison />
 
 Claude Code sessions have a fixed context window. Every task you work on fills it up. Review some code, write tests, refactor a module, debug an API endpoint. By the third or fourth task, the model starts losing nuance on the earlier ones. By the fifth, you're compacting or starting a new session entirely.
 
@@ -23,8 +23,6 @@ But that framing misses what actually breaks down. The problem is not "can I run
 2. **You become the bottleneck.** With five background agents, _you_ are the orchestrator. You're tracking which terminal is doing what, checking on progress, noticing failures, deciding what to do next. The cognitive load scales linearly with the number of agents.
 
 Dispatch solves both. Your session becomes a lightweight mediator that plans and delegates. The actual implementation work happens in fresh, isolated worker contexts. And the dispatcher (not you) carries the coordination overhead.
-
-<DispatchComparison />
 
 ## 10x your effective context
 
