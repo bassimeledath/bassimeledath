@@ -1,9 +1,11 @@
 import Image from "next/image";
 import type { MDXComponents } from "mdx/types";
 import Mermaid from "./Mermaid";
+import DispatchComparison from "./DispatchComparison";
 
 export const mdxComponents: MDXComponents = {
   "mermaid-chart": (props: { chart: string }) => <Mermaid chart={props.chart} />,
+  DispatchComparison,
   img: (props) => {
     const { src, alt, ...rest } = props as React.ImgHTMLAttributes<HTMLImageElement>;
     if (!src) return null;

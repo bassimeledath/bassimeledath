@@ -11,7 +11,7 @@ export const projects: Project[] = [
   {
     title: "Dispatch",
     description:
-      "Dispatch multiple AI workers in parallel without blocking your session. The dispatcher tracks all of them for you.",
+      "10x your Claude Code context window. Your session becomes a lightweight orchestrator while workers execute in their own full contexts.",
     image: "/images/projects/dispatch.png",
     link: "/blog/dispatch",
     github: "https://github.com/bassimeledath/dispatch",

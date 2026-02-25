@@ -1,56 +1,80 @@
 ---
-title: "I Built a Dispatcher Skill for Claude Code So I Can Stop Juggling 10 Terminals at Once"
-description: "AI coding isn't bottlenecked by model quality anymore. It's bottlenecked by human coordination. I built dispatch to fix that."
+title: "10x Your Claude Code Window Size with Dispatch"
+description: "Your Claude Code session has a fixed context window. Dispatch multiplies it by turning your session into a lightweight orchestrator while dedicated workers each run with their own full context."
 thumbnail: /images/blog/dispatch-hero.jpg
 tags: ["AI", "Claude Code", "Developer Tools"]
 ---
 
 ![Dispatch: from terminal chaos to orchestrated calm](/images/blog/dispatch-hero.jpg)
 
-For a long time I felt on top of the world, constantly opening new terminal tabs, spinning up Claude Code instances to work on features, research tasks, one-off fixes. It felt like the pinnacle of vibe coding. Never skipping a beat. Feature X in one tab, feature Y in the next, product asks for a small change, open another tab.
+Claude Code sessions have a fixed context window. Every task you work on fills it up. Review some code, write tests, refactor a module, debug an API endpoint. By the third or fourth task, the model starts losing nuance on the earlier ones. By the fifth, you're compacting or starting a new session entirely.
 
-But then the models got better and faster.
+This is the actual bottleneck in AI-assisted development right now. Not model quality. The models are genuinely great. The bottleneck is twofold: your single session can only hold so much before it degrades, and _you_ can only track so many parallel workstreams before you lose the thread.
 
-The number of tabs became unwieldy, and I hit the ultimate blocker: myself.
+I built [Dispatch](https://github.com/bassimeledath/dispatch) to solve both of these at the same time.
 
-I can reliably juggle maybe 3-4 active agent threads. Past that, I start forgetting. Not just what *I* was doing, but what context each model had. That is where the waste starts: re-explaining, duplicate work, loops.
+## The real constraint isn't intelligence
 
-So I built `dispatch`: a Claude Code skill that delegates work to background agents and keeps my main session clean.
+When people hear "multiple background agents," they roll their eyes. Everyone is doing that now. Open five terminals, run `claude --background` in each, check back later.
 
-The key thing is it is non-blocking. I dispatch a worker, and my terminal is immediately free again.
+But that framing misses what actually breaks down. The problem is not "can I run things in parallel." The problem is:
 
-## Let AI Handle the Delegation
+1. **Your main session fills up.** Every task you work on consumes context. The more ambitious your session, the faster it saturates. Once it's full, the quality of every subsequent response degrades.
+2. **You become the bottleneck.** With five background agents, _you_ are the orchestrator. You're tracking which terminal is doing what, checking on progress, noticing failures, deciding what to do next. The cognitive load scales linearly with the number of agents.
 
-AI coding isn't bottlenecked by model quality anymore. It's bottlenecked by human coordination.
+Dispatch solves both. Your session becomes a lightweight mediator that plans and delegates. The actual implementation work happens in fresh, isolated worker contexts. And the dispatcher (not you) carries the coordination overhead.
 
-Most of us are still doing manual orchestration:
+<DispatchComparison />
 
-- open tab
-- copy context
-- assign task
-- check progress
-- answer question
-- repeat
+## 10x your effective context
 
-That does not scale. The right form factor now is: let AI handle most of the delegation while you stay in one command seat making product and engineering decisions.
+Without Dispatch, you have one context window shared across every task. Each task consumes a chunk. Want to review code, write tests, refactor a config layer, update docs, and debug an API? That's one window doing all five. By the time you're on task four, the model's recall of task one is degraded.
 
-With Dispatch, you type `/dispatch "task"` and it handles the rest: plans the work as a checklist, spawns a background worker, tracks progress, and reports back. You never leave your session. The worker can be any model you have available across your CLI tools: Claude Code, Cursor, Codex.
+With Dispatch, every task gets its own dedicated context window. Your main session only holds orchestration overhead: the plan files, status updates, and your decisions. That's maybe 10% of a window per task.
+
+The math is straightforward. Instead of cramming five tasks into one window, you get five dedicated windows working in parallel, plus your orchestration window stays lean enough to keep dispatching indefinitely. Your effective working context goes from 1x to roughly 10x.
 
 ```
-/dispatch use sonnet to find better design patterns for the auth module
 /dispatch use opus to review this PR for edge cases
-/dispatch use gemini to refactor the config parser — it's getting unwieldy
+/dispatch use sonnet to write integration tests for the payment flow
+/dispatch use gpt-5.3 to refactor the config parser
 ```
 
-I've found it most useful for three things:
+Three tasks. Three fresh context windows. Your main session barely noticed.
 
-- **Research in the middle of work.** You've hit a bug, there are several ways to fix it. Dispatch a research agent to do the analysis for you so you can decide.
-- **Cross-model review.** I love using Codex models to review Claude's work. You can dispatch multiple LLMs to review the same code and the dispatcher compiles findings across all of them.
-- **Parallel development.** Dispatch 3 agents in 3 different worktrees at the same time. It's seamless.
+## The cognitive load shift
+
+This is the part that matters more than most people realize.
+
+With `claude --background`, multiple terminal tabs, or fire-and-forget agent runners, the parallelism is real but the bottleneck just moves. Now _you_ are the orchestrator. You're tracking which terminal is doing what, checking on progress, noticing when something fails, context-switching between outputs. The cognitive load is entirely on you.
+
+This is why "just run more agents" doesn't actually scale. Your brain becomes the limiting factor. You can reliably juggle maybe 3-4 active agent threads. Past that, you start forgetting what context each model had, what you already asked for, which output to trust.
+
+Dispatch moves the coordination burden to the AI dispatcher. The dispatcher tracks all workers, surfaces questions when they arise, reports completions, handles errors, and offers recovery options. Your role reduces to two things:
+
+1. Describe what you want
+2. Answer questions when asked
+
+That's it. You don't poll. You don't check. You don't track. The dispatcher does all of that, and its capacity for tracking parallel workstreams is orders of magnitude higher than yours.
+
+## Workers ask questions back
+
+This is the design choice that separates dispatch from fire-and-forget systems.
+
+When a worker gets stuck, it doesn't silently fail or hallucinate an answer. It asks a clarifying question. The dispatcher surfaces it to you, you answer, and the worker continues without losing context. No restart. No re-explaining. No lost work.
+
+```
+Worker is asking: "requirements.txt doesn't exist. What feature should I implement?"
+> Add a /health endpoint that returns JSON with uptime and version.
+
+Answer sent. Worker is continuing.
+```
+
+The moment a worker is dispatched, your session is immediately free. Dispatch another task. Ask a question. Write code. Workers run in parallel and results arrive as they complete. If a worker needs your input, the dispatcher surfaces it. Otherwise, you're uninterrupted.
 
 ## How it works
 
-Three design choices make this work:
+Three design choices make this system hold together.
 
 ### Checklist-as-state
 
@@ -65,11 +89,11 @@ The plan file IS the progress tracker. No databases, no signal files. Just a mar
 - [ ] Write findings report
 ```
 
-You can `cat` it anytime. It's human-readable, debuggable, and git-friendly. That's the entire state management layer.
+You can read it anytime. It's human-readable, debuggable, and git-friendly. That's the entire state management layer.
 
 ### Filesystem IPC
 
-When a worker gets stuck, it shouldn't have to exit to ask you a question. Exiting means losing the entire context window. Instead, workers write questions to numbered files, a lightweight sentinel detects them and notifies the dispatcher, you answer, and the worker continues with full context preserved. No restart. No re-explaining.
+When a worker gets stuck, it shouldn't have to exit and lose its entire context window just to ask a question. Instead, workers write questions to numbered files, a lightweight sentinel detects them and notifies the dispatcher, you answer, and the worker continues with full context preserved.
 
 ```mermaid
 sequenceDiagram
@@ -113,22 +137,16 @@ On first run, Dispatch auto-detects your installed CLIs, discovers available mod
 npx skills add bassimeledath/dispatch -g
 ```
 
-Then just:
+Then:
 
 ```
 /dispatch "refactor the auth module"
 ```
 
-## From tool to workforce
+Mix models per task. Claude for deep reasoning, GPT for broad generation, Gemini for speed. Reference any model by name.
 
-We're living through a rapid shift in how software gets built:
+## The shift
 
-- **2024:** AI as autocomplete
-- **2025:** AI as pair programmer
-- **2026:** AI as coordinated workforce
+The pattern in AI-assisted development has been clear: 2024 was autocomplete, 2025 was pair programming, and 2026 is coordination. The right form factor is no longer you managing terminal tabs and context-switching between agents. It's letting AI handle the delegation too, because the models are good enough now to coordinate themselves.
 
-The right form factor for working with AI today isn't you managing a dozen terminal tabs. It's letting AI handle the delegation too, because the models are genuinely that good now. One dispatcher, many workers, and you in the loop for the decisions that matter.
-
-Delegation is no longer a gimmick. It is becoming the interface.
-
-If you're drowning in terminal tabs, give it a shot.
+One dispatcher, many workers, and you in the loop for the decisions that matter.
