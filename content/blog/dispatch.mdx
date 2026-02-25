@@ -1,11 +1,11 @@
 ---
 title: "10x Your Claude Code Window Size with Dispatch"
 description: "Your Claude Code session has a fixed context window. Dispatch multiplies it by turning your session into a lightweight orchestrator while dedicated workers each run with their own full context."
-thumbnail: /images/blog/dispatch-hero.jpg
+thumbnail: /images/blog/dispatch-before-after.jpg
 tags: ["AI", "Claude Code", "Developer Tools"]
 ---
 
-<DispatchComparison />
+![Without Dispatch vs With Dispatch: your session fills up with sequential tasks until context is saturated, while dispatch keeps your session lean and routes work to parallel workers with fresh contexts](/images/blog/dispatch-before-after.jpg)
 
 Claude Code sessions have a fixed context window. Every task you work on fills it up. Review some code, write tests, refactor a module, debug an API endpoint. By the third or fourth task, the model starts losing nuance on the earlier ones. By the fifth, you're compacting or starting a new session entirely.
 
