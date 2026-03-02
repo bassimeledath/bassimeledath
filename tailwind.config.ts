@@ -29,7 +29,7 @@ const config: Config = {
             maxWidth: "72ch",
             lineHeight: "1.8",
             fontSize: "19px",
-            color: "rgb(var(--foreground))",
+            color: "rgb(var(--prose-body))",
             "h1, h2, h3, h4": {
               fontFamily: "var(--font-serif)",
               letterSpacing: "-0.025em",

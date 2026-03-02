@@ -13,11 +13,13 @@
     --code-bg: 245 245 243;
     --selection: 253 230 138;
     --tag-bg: 240 240 238;
+    --prose-body: 26 26 26;
   }
 
   .dark {
     --background: 28 26 23;
     --foreground: 232 228 222;
+    --prose-body: 194 189 179;
     --muted: 154 148 137;
     --border: 46 43 38;
     --accent: 217 119 6;
