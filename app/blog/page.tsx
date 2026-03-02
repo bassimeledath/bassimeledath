@@ -1,12 +1,7 @@
 import Link from "next/link";
 import { FiArrowUpRight } from "react-icons/fi";
-import { getAllPosts } from "@/lib/blog";
+import { getAllPosts, getExcerpt } from "@/lib/blog";
 import { formatDate } from "@/lib/utils";
-
-function truncate(text: string, max: number) {
-  if (text.length <= max) return text;
-  return text.slice(0, max).trimEnd() + "...";
-}
 
 export default function BlogPage() {
   const posts = getAllPosts();
@@ -47,7 +42,7 @@ export default function BlogPage() {
                 {formatDate(post.published)}
               </time>
               <p className="mt-3 text-sm leading-relaxed text-muted">
-                {truncate(post.description, 140)}
+                {getExcerpt(post.content, 140)}
               </p>
             </div>
           </Link>

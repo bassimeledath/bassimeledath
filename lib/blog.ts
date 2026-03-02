@@ -62,6 +62,22 @@ export function getPostBySlug(slug: string, dates?: BlogDates): BlogPost {
   };
 }
 
+/** Extract the first plain-text snippet from MDX content. */
+export function getExcerpt(content: string, max: number = 140): string {
+  const plain = content
+    .replace(/!\[.*?\]\(.*?\)/g, "")   // remove images
+    .replace(/\[([^\]]+)\]\(.*?\)/g, "$1") // links → text
+    .replace(/```[\s\S]*?```/g, "")    // remove code blocks
+    .replace(/`[^`]+`/g, "")           // remove inline code
+    .replace(/^#{1,6}\s+.*$/gm, "")    // remove headings
+    .replace(/[*_~]+/g, "")            // remove bold/italic/strike
+    .replace(/\n+/g, " ")             // collapse newlines
+    .replace(/\s+/g, " ")             // collapse whitespace
+    .trim();
+  if (plain.length <= max) return plain;
+  return plain.slice(0, max).trimEnd() + "…";
+}
+
 export function getAllPosts(): BlogPost[] {
   const slugs = getAllPostSlugs();
   const dates = loadDates();
