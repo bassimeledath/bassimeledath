@@ -56,7 +56,7 @@ export default function BlogPostPage({ params }: Props) {
     post.modified.slice(0, 10) !== post.published.slice(0, 10);
 
   return (
-    <div className="relative py-16 toc:flex toc:gap-16">
+    <div className="relative py-16 toc:flex toc:gap-16 toc:justify-center">
       <article className="mx-auto max-w-[72ch] toc:mx-0">
         <header className="mb-10">
           <h1 className="font-serif text-3xl font-medium tracking-tight text-foreground sm:text-4xl">
