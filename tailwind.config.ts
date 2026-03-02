@@ -17,7 +17,6 @@ const config: Config = {
         accent: "rgb(var(--accent) / <alpha-value>)",
       },
       fontFamily: {
-        sans: ["var(--font-sans)", "system-ui", "sans-serif"],
         serif: ["var(--font-serif)", "Georgia", "serif"],
         mono: ["var(--font-mono)", "Menlo", "monospace"],
       },
@@ -29,7 +28,7 @@ const config: Config = {
           css: {
             maxWidth: "72ch",
             lineHeight: "1.8",
-            fontSize: "17px",
+            fontSize: "19px",
             color: "rgb(var(--foreground))",
             "h1, h2, h3, h4": {
               fontFamily: "var(--font-serif)",

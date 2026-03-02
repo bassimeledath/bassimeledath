@@ -1,16 +1,11 @@
 import type { Metadata } from "next";
-import { Instrument_Sans, Newsreader, JetBrains_Mono } from "next/font/google";
+import { Literata, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { ThemeProvider } from "@/components/ThemeProvider";
 
-const instrumentSans = Instrument_Sans({
-  subsets: ["latin"],
-  variable: "--font-sans",
-});
-
-const newsreader = Newsreader({
+const literata = Literata({
   subsets: ["latin"],
   variable: "--font-serif",
 });
@@ -32,10 +27,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html
       lang="en"
-      className={`${instrumentSans.variable} ${newsreader.variable} ${jetbrainsMono.variable}`}
+      className={`${literata.variable} ${jetbrainsMono.variable}`}
       suppressHydrationWarning
     >
-      <body className="font-sans">
+      <body className="font-serif">
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <div className="mx-auto max-w-[1200px] px-6">
             <Header />

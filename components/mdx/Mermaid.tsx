@@ -26,7 +26,7 @@ export default function Mermaid({ chart }: MermaidProps) {
           mirrorActors: false,
           useMaxWidth: true,
         },
-        fontFamily: "var(--font-sans), system-ui, sans-serif",
+        fontFamily: "var(--font-serif), Georgia, serif",
       });
 
       const id = `mermaid-${Math.random().toString(36).slice(2, 9)}`;
