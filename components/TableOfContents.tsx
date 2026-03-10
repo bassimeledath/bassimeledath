@@ -28,6 +28,18 @@ export default function TableOfContents({ headings }: { headings: Heading[] }) {
     return () => observer.disconnect();
   }, [headings]);
 
+  useEffect(() => {
+    const onScroll = () => {
+      if (headings.length === 0) return;
+      const firstEl = document.getElementById(headings[0].id);
+      if (firstEl && window.scrollY < firstEl.offsetTop - 100) {
+        setActiveId(headings[0].id);
+      }
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, [headings]);
+
   if (headings.length === 0) return null;
 
   return (
