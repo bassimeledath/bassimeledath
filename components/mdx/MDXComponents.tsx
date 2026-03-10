@@ -8,12 +8,10 @@ export const mdxComponents: MDXComponents = {
     const { src, alt, ...rest } = props as React.ImgHTMLAttributes<HTMLImageElement>;
     if (!src) return null;
 
-    if (src.startsWith("http")) {
+    const image = src.startsWith("http") ? (
       // eslint-disable-next-line @next/next/no-img-element
-      return <img src={src} alt={alt || ""} className="rounded-lg" {...rest} />;
-    }
-
-    return (
+      <img src={src} alt={alt || ""} className="rounded-lg" {...rest} />
+    ) : (
       <Image
         src={src}
         alt={alt || ""}
@@ -23,6 +21,19 @@ export const mdxComponents: MDXComponents = {
         sizes="(max-width: 768px) 100vw, 72ch"
       />
     );
+
+    if (alt) {
+      return (
+        <figure className="my-6">
+          {image}
+          <figcaption className="mt-2 text-center text-sm text-muted">
+            {alt}
+          </figcaption>
+        </figure>
+      );
+    }
+
+    return image;
   },
   a: (props) => {
     const isExternal =
