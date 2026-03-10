@@ -4,7 +4,9 @@ import { useEffect, useState } from "react";
 import type { Heading } from "@/lib/extract-headings";
 
 export default function TableOfContents({ headings }: { headings: Heading[] }) {
-  const [activeId, setActiveId] = useState<string>("");
+  const [activeId, setActiveId] = useState<string>(
+    headings.length > 0 ? headings[0].id : ""
+  );
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -15,7 +17,7 @@ export default function TableOfContents({ headings }: { headings: Heading[] }) {
           }
         }
       },
-      { rootMargin: "-80px 0px -75% 0px" }
+      { rootMargin: "0px 0px -75% 0px" }
     );
 
     for (const heading of headings) {

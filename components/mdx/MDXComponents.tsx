@@ -1,9 +1,25 @@
 import Image from "next/image";
 import type { MDXComponents } from "mdx/types";
 import Mermaid from "./Mermaid";
+import LevelQuiz from "./LevelQuiz";
 
 export const mdxComponents: MDXComponents = {
   "mermaid-chart": (props: { chart: string }) => <Mermaid chart={props.chart} />,
+  LevelQuiz: () => <LevelQuiz />,
+  p: (props) => {
+    const children = props.children as React.ReactNode;
+    // If the paragraph contains only an image, render as div to avoid <figure> inside <p>
+    if (
+      children &&
+      typeof children === "object" &&
+      "type" in (children as React.ReactElement) &&
+      ((children as React.ReactElement).type === "img" ||
+        (children as React.ReactElement).props?.src)
+    ) {
+      return <div {...props} />;
+    }
+    return <p {...props} />;
+  },
   img: (props) => {
     const { src, alt, ...rest } = props as React.ImgHTMLAttributes<HTMLImageElement>;
     if (!src) return null;
