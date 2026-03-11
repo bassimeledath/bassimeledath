@@ -40,7 +40,7 @@ export default function HomePage() {
               <FaGithub size={20} />
             </a>
             <a
-              href="https://linkedin.com/in/bassimeledath"
+              href="https://www.linkedin.com/in/bassim-eledath/"
               target="_blank"
               rel="noopener noreferrer"
               aria-label="LinkedIn profile"
