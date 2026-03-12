@@ -3,7 +3,7 @@ import { getAllPosts, getExcerpt } from "@/lib/blog";
 export const dynamic = "force-dynamic";
 
 const SITE_URL =
-  process.env.NEXT_PUBLIC_SITE_URL ?? "https://bassimeledath.com";
+  process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.bassimeledath.com";
 
 function escapeXml(str: string): string {
   return str

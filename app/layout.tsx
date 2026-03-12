@@ -16,7 +16,7 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://bassimeledath.com"),
+  metadataBase: new URL("https://www.bassimeledath.com"),
   title: "Bassim Eledath",
   description: "AI Engineer — building with LLMs, machine learning, and web technologies.",
   icons: {
