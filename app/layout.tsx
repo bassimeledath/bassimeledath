@@ -30,6 +30,26 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       className={`${literata.variable} ${jetbrainsMono.variable}`}
       suppressHydrationWarning
     >
+      <head>
+        {/* Google tag (gtag.js) */}
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-YQRSW0BTG2"></script>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', 'G-YQRSW0BTG2');
+            `,
+          }}
+        />
+        <link
+          rel="alternate"
+          type="application/rss+xml"
+          title="Bassim Eledath RSS Feed"
+          href="/feed.xml"
+        />
+      </head>
       <body className="font-serif">
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <div className="mx-auto max-w-[1200px] px-6">

@@ -71,6 +71,7 @@ export function getExcerpt(content: string, max: number = 140): string {
     .replace(/`[^`]+`/g, "")           // remove inline code
     .replace(/^#{1,6}\s+.*$/gm, "")    // remove headings
     .replace(/[*_~]+/g, "")            // remove bold/italic/strike
+    .replace(/<[^>]+>/g, "")           // strip JSX/HTML tags
     .replace(/\n+/g, " ")             // collapse newlines
     .replace(/\s+/g, " ")             // collapse whitespace
     .trim();
