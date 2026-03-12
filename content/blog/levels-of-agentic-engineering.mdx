@@ -19,7 +19,7 @@ From talking to several teams and individuals practicing AI-assisted coding, her
 
 I'll address these two zippily, mostly for posterity. Skim freely.
 
-Tab completion is where it started. GitHub Copilot kicked off the movement. Click tab, autocomplete code. Probably long forgotten by many and skipped entirely by new entrants to agentic engineering. It favored experienced devs who could adeptly skeleton their code before AI filled in the blanks.
+It started with Copilot and tab complete. Click tab, autocomplete code. Probably long forgotten by many and skipped entirely by new entrants to agentic engineering. It favored experienced devs who could adeptly skeleton their code before AI filled in the blanks.
 
 AI-focused IDEs like Cursor changed the game by connecting chat to your codebase, making multi-file edits dramatically easier. But the ceiling was always context. The model could only help with what it could see, and annoyingly often, it was either not seeing the right context or seeing too much of the wrong context.
 
@@ -27,7 +27,7 @@ Most people at this level are also experimenting with plan mode in their coding 
 
 ## Level 3: Context Engineering
 
-Now the fun stuff. Buzz phrase of the year in 2025, context engineering became a thing when models got reliably good at following a reasonable number of instructions with just the right amount of context. Noisy context was just as bad as underspecified context, so the effort was in improving the information density of each token. "Every token needs to fight for its place in the prompt" was the mantra.
+Buzz phrase of the year in 2025, context engineering became a thing when models got reliably good at following a reasonable number of instructions with just the right amount of context. Noisy context was just as bad as underspecified context, so the effort was in improving the information density of each token. "Every token needs to fight for its place in the prompt" was the mantra.
 
 ![Same message, fewer tokens — information density was the name of the game (source: humanlayer/12-factor-agents)](/images/blog/context-eng.png)
 
@@ -49,7 +49,7 @@ It's a plan, delegate, assess, codify loop. You plan the task with enough contex
 
 ![The compounding loop: plan, delegate, assess, codify — each cycle makes the next one better](/images/blog/compounding-eng.png)
 
-The magic is in that codify step. LLMs are stateless. If they re-introduce a dependency you explicitly removed yesterday, they'll do it again tomorrow unless you tell them not to. The most common way to close that loop is updating your `CLAUDE.md` (or equivalent rules file) so the lesson is baked into every future session. A word of caution: the instinct to codify everything into your rules file can backfire (too many instructions is as good as none). The better move is to create a setting where the LLM can easily discover useful context on its own, for example by maintaining an up-to-date `docs/` folder (more on this in Level 7).
+That codify step is what makes it compound. LLMs are stateless. If they re-introduce a dependency you explicitly removed yesterday, they'll do it again tomorrow unless you tell them not to. The most common way to close that loop is updating your `CLAUDE.md` (or equivalent rules file) so the lesson is baked into every future session. A word of caution: the instinct to codify everything into your rules file can backfire (too many instructions is as good as none). The better move is to create a setting where the LLM can easily discover useful context on its own, for example by maintaining an up-to-date `docs/` folder (more on this in Level 7).
 
 Practitioners of compounding engineering are usually hyper-aware of the context being fed to their LLM. When an LLM makes a mistake, they instinctively think about missing context before blaming the model's competence. That instinct is what makes levels 5 through 8 possible.
 
@@ -67,7 +67,7 @@ Once multiple people on your team are writing their own versions of the same ski
 
 One more trend worth calling out: it's becoming common for LLMs to use CLI tools instead of MCPs (and it seems like every company is shipping one: [Google Workspace CLI](https://justin.poehnelt.com/posts/rewrite-your-cli-for-ai-agents/), Braintrust is launching one soon). The reason is token efficiency. MCP servers inject full tool schemas into context on every turn whether the agent uses them or not. CLIs flip this: the agent runs a targeted command, and only the relevant output enters the context window. I use `agent-browser` heavily for exactly this reason versus using the Playwright MCP.
 
-**Quick pause before we go further.** Levels 3 through 5 are the building blocks for everything that follows. LLMs are unpredictably good at some things and bad at others, and you need to develop an intuition for where those edges are before stacking more automation on top. If your context is noisy, your prompts are under- or misspecified, or your tools are poorly described, levels 6 through 8 just amplify the mess.
+**One thing before we continue.** Levels 3 through 5 are the building blocks for everything that follows. LLMs are unpredictably good at some things and bad at others, and you need to develop an intuition for where those edges are before stacking more automation on top. If your context is noisy, your prompts are under- or misspecified, or your tools are poorly described, levels 6 through 8 just amplify the mess.
 
 ## Level 6: Harness Engineering & Automated Feedback Loops
 
@@ -83,7 +83,7 @@ My team builds voice and chat agents for tech troubleshooting, so I built a CLI 
 
 The concept that enables this is [backpressure](https://latentpatterns.com/glossary/agent-backpressure): automated feedback mechanisms (type systems, tests, linters, pre-commit hooks) that let agents detect and correct mistakes without human intervention. If you want autonomy, you need backpressure. Otherwise you end up with a slop machine. This extends to security too. [Vercel's CTO makes the case](https://vercel.com/blog/security-boundaries-in-agentic-architectures) that agents, the code they generate, and your secrets should live in separate trust domains, because a prompt injection buried in a log file can trick an agent into exfiltrating your credentials if everything shares one security context. Security boundaries are backpressure: they constrain what an agent *can* do when it goes off the rails, not just what it *should* do.
 
-Two principles that sharpen this further:
+Two things that help here:
 
 - **Design for throughput, not perfection.** When perfection is required per commit, agents pile on the same bug and overwrite each other's fixes. Better to tolerate small non-blocking errors and do a final quality pass before release. We do the same for our human colleagues.
 - **Constraints > instructions.** Step-by-step prompting ("do A, then B, then C") is increasingly outdated. In my experience, defining boundaries works better than giving checklists, because agents fixate on the list and ignore anything not on it. The better prompt is "here's what I want, work on it until you pass all these tests."
