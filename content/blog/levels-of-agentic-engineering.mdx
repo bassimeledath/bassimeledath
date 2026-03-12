@@ -59,6 +59,8 @@ Levels 3 and 4 solve for context. Level 5 solves for capability. MCPs and custom
 
 There's no shortage of good material on MCPs and skills already, so I won't rehash what they are. But here are some examples of how I use them: my team shares a PR review skill that we've all iterated on (and still do) that conditionally launches subagents depending on the nature of the PR. One handles integration safety with the database. Another runs complexity analysis to flag redundancies or overengineering. Another checks prompt health to ensure our prompts follow the team's standard format. It also runs linters and Ruff.
 
+![A single PR triggers a review skill that fans out into specialized subagents — each checking a different dimension of quality](/images/blog/review_skill.jpg)
+
 Why invest this much in a review skill? Because as agents start producing PRs at volume, human review becomes the bottleneck, not the quality gate. Latent Space makes a [compelling case](https://www.latent.space/p/reviews-dead) that code review as we know it is dead. Automated, consistent, skill-driven review is what replaces it.
 
 On the MCP side, I use the Braintrust MCP so my LLM can query evaluation logs and make changes directly. I use DeepWiki MCP to give my agent access to documentation for any open-source repo without manually pulling it into context.
@@ -117,6 +119,8 @@ Dispatch runs locally, which makes it ideal for rapid development where you want
 One pattern that's been surprisingly powerful at this level: use different models for different jobs. The best engineering teams aren't staffed with clones. They're staffed with people who think differently, trained by different experiences, bringing different strengths. The same logic applies to LLMs. These models were post-trained differently and have meaningfully different dispositions. I routinely dispatch Opus for implementation, Gemini for exploratory research, and Codex for review, and the cumulative output is stronger than any single model working alone. Think wisdom of crowds, but for code.
 
 Critically, you also need to decouple the implementer from the reviewer. I've learned this the hard way too many times: if the same model instance implements and evaluates its own work, it's biased. It will gloss over issues and tell you all tasks are complete when they aren't. It's not malice, it's the same reason you don't grade your own exam. Have a different model (or a different instance with a review-specific prompt) do the review pass. Your signal quality goes way up.
+
+![Don't let the same model grade its own exam — separate the implementer from the reviewer](/images/blog/model_separation_implement_review.jpg)
 
 Background agents also open the floodgates for combining your CI with AI. Once agents can run without a human in the chair, trigger them from your existing infrastructure. A docs bot that regenerates documentation on every merge and raises a PR to update `CLAUDE.md` (we do this and it's a huge time saver). A security reviewer that scans PRs and opens fixes. A dependency bot that actually upgrades packages and runs the test suite rather than just flagging them. Good context, compounding rules, capable tools, and automated feedback loops, now running autonomously.
 
