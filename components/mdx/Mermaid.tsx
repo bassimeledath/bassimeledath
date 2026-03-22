@@ -44,7 +44,7 @@ export default function Mermaid({ chart }: MermaidProps) {
 
   if (error) {
     return (
-      <div className="my-8 rounded-lg bg-[rgb(var(--code-bg))] p-6 text-center text-sm text-neutral-500">
+      <div className="my-8 rounded-lg bg-[rgb(var(--code-bg))] p-6 text-center text-sm text-muted">
         Unable to render diagram.
       </div>
     );

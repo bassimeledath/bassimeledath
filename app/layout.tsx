@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Literata, JetBrains_Mono } from "next/font/google";
+import Script from "next/script";
 import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -32,18 +33,18 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       suppressHydrationWarning
     >
       <head>
-        {/* Google tag (gtag.js) */}
-        <script async src="https://www.googletagmanager.com/gtag/js?id=G-YQRSW0BTG2"></script>
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              window.dataLayer = window.dataLayer || [];
-              function gtag(){dataLayer.push(arguments);}
-              gtag('js', new Date());
-              gtag('config', 'G-YQRSW0BTG2');
-            `,
-          }}
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-YQRSW0BTG2"
+          strategy="afterInteractive"
         />
+        <Script id="gtag-init" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-YQRSW0BTG2');
+          `}
+        </Script>
         <link
           rel="alternate"
           type="application/rss+xml"
@@ -51,11 +52,17 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           href="/feed.xml"
         />
       </head>
-      <body className="font-serif">
+      <body className="font-serif min-h-screen flex flex-col">
+        <a
+          href="#main"
+          className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded focus:bg-accent focus:px-4 focus:py-2 focus:text-white"
+        >
+          Skip to content
+        </a>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          <div className="mx-auto max-w-[1200px] px-6">
+          <div className="mx-auto max-w-[1200px] px-6 flex flex-col flex-1">
             <Header />
-            <main className="min-h-[calc(100vh-200px)]">{children}</main>
+            <main id="main" tabIndex={-1} className="flex-1 outline-none">{children}</main>
             <Footer />
           </div>
         </ThemeProvider>

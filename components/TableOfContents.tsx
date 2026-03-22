@@ -53,10 +53,11 @@ export default function TableOfContents({ headings }: { headings: Heading[] }) {
             <li key={heading.id} className={heading.level === 3 ? "pl-3" : ""}>
               <a
                 href={`#${heading.id}`}
-                className={`block leading-snug transition-colors ${
+                aria-current={activeId === heading.id ? "true" : undefined}
+                className={`block leading-snug border-l-2 pl-2 transition-all duration-200 ${
                   activeId === heading.id
-                    ? "text-foreground font-medium"
-                    : "text-muted hover:text-foreground"
+                    ? "text-foreground border-accent translate-x-0.5"
+                    : "text-muted hover:text-foreground border-transparent"
                 }`}
               >
                 {heading.text}

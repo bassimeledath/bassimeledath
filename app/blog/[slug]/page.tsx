@@ -6,7 +6,9 @@ import { remarkPlugins, rehypePlugins } from "@/lib/mdx-options";
 import { extractHeadings } from "@/lib/extract-headings";
 import { mdxComponents } from "@/components/mdx/MDXComponents";
 import TableOfContents from "@/components/TableOfContents";
+import ReadingProgress from "@/components/ReadingProgress";
 import { formatDate } from "@/lib/utils";
+import Link from "next/link";
 import type { Metadata } from "next";
 
 const getCachedPost = cache((slug: string) => getPostBySlug(slug));
@@ -57,7 +59,14 @@ export default function BlogPostPage({ params }: Props) {
 
   return (
     <div className="relative py-16 toc:flex toc:gap-16 toc:justify-center">
+      <ReadingProgress />
       <article className="mx-auto max-w-[72ch] toc:mx-0">
+        <Link
+          href="/blog"
+          className="mb-8 inline-flex items-center gap-1 text-sm text-muted transition-colors hover:text-foreground"
+        >
+          &larr; All posts
+        </Link>
         <header className="mb-10">
           <h1 className="font-serif text-3xl font-medium tracking-tight text-foreground sm:text-4xl">
             {post.title}

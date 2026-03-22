@@ -54,6 +54,11 @@ export const mdxComponents: MDXComponents = {
   a: (props) => {
     const isExternal =
       typeof props.href === "string" && props.href.startsWith("http");
+    const isAnchor =
+      typeof props.className === "string" && props.className.includes("anchor");
+    if (isAnchor) {
+      return <a {...props} />;
+    }
     return (
       <a
         {...props}

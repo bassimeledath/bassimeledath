@@ -19,15 +19,22 @@ export default function BlogPage() {
           <Link
             key={post.slug}
             href={`/blog/${post.slug}`}
-            className="animate-fade-up group flex flex-col rounded-lg border border-border p-5 transition-colors hover:border-muted"
+            className="animate-fade-up group flex flex-col rounded-lg border border-border p-5 transition-all duration-200 hover:border-muted hover:-translate-y-0.5 hover:shadow-sm"
             style={{ animationDelay: `${(i + 1) * 80}ms` }}
           >
             <div className="flex items-center justify-between text-xs text-muted">
-              <span>
+              <div className="flex gap-1.5">
                 {post.tags.length > 0
-                  ? post.tags.slice(0, 2).join(" · ")
-                  : "Writing"}
-              </span>
+                  ? post.tags.slice(0, 2).map((tag) => (
+                      <span
+                        key={tag}
+                        className="rounded-full bg-[rgb(var(--tag-bg))] px-2 py-0.5 text-xs text-muted"
+                      >
+                        {tag}
+                      </span>
+                    ))
+                  : <span className="rounded-full bg-[rgb(var(--tag-bg))] px-2 py-0.5 text-xs text-muted">Writing</span>}
+              </div>
               <FiArrowUpRight
                 size={14}
                 className="opacity-0 transition-opacity group-hover:opacity-100"

@@ -15,6 +15,11 @@ const config: Config = {
         muted: "rgb(var(--muted) / <alpha-value>)",
         border: "rgb(var(--border) / <alpha-value>)",
         accent: "rgb(var(--accent) / <alpha-value>)",
+        "link-underline": "rgb(var(--link-underline) / <alpha-value>)",
+        "code-bg": "rgb(var(--code-bg) / <alpha-value>)",
+        selection: "rgb(var(--selection) / <alpha-value>)",
+        "tag-bg": "rgb(var(--tag-bg) / <alpha-value>)",
+        "prose-body": "rgb(var(--prose-body) / <alpha-value>)",
       },
       fontFamily: {
         serif: ["var(--font-serif)", "Georgia", "serif"],
@@ -35,24 +40,19 @@ const config: Config = {
               letterSpacing: "-0.025em",
               color: "rgb(var(--foreground))",
             },
+            "h2, h3, h4": {
+              scrollMarginTop: "6rem",
+            },
             strong: {
               color: "rgb(var(--foreground))",
             },
             h2: {
               marginTop: "2.5em",
             },
-            a: {
-              color: "rgb(var(--foreground))",
-              textDecorationColor: "rgb(var(--link-underline))",
-              textUnderlineOffset: "3px",
-              transition: "text-decoration-color 0.2s ease",
-              "&:hover": {
-                textDecorationColor: "rgb(var(--accent))",
-              },
-            },
             code: {
               color: "rgb(var(--foreground))",
               backgroundColor: "rgb(var(--code-bg))",
+              fontSize: "0.875em",
               padding: "0.2em 0.4em",
               borderRadius: "0.25rem",
               fontWeight: "400",
