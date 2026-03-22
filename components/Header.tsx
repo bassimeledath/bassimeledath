@@ -7,6 +7,7 @@ import ThemeToggle from "@/components/ThemeToggle";
 export default function Header() {
   const pathname = usePathname();
   const isBlog = pathname?.startsWith("/blog");
+  const isHome = pathname === "/";
 
   return (
     <header className="flex items-center justify-between py-6">
@@ -14,6 +15,14 @@ export default function Header() {
         Bassim Eledath
       </Link>
       <nav aria-label="Main navigation" className="flex items-center gap-6 text-sm text-muted">
+        <Link
+          href="/"
+          className={`transition-colors hover:text-foreground ${
+            isHome ? "text-foreground" : ""
+          }`}
+        >
+          About
+        </Link>
         <Link
           href="/blog"
           className={`transition-colors hover:text-foreground ${
