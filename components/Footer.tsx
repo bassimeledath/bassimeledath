@@ -25,7 +25,7 @@ export default function Footer() {
             <FaLinkedin size={18} />
           </a>
           <a
-            href="https://x.com/bassimeledath"
+            href="https://x.com/bassim_eledath"
             target="_blank"
             rel="noopener noreferrer"
             aria-label="X (Twitter) profile"
