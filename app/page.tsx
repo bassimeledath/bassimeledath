@@ -97,9 +97,9 @@ export default function HomePage() {
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label={`${project.title} GitHub repository`}
-                    className="inline-flex min-h-[44px] min-w-[44px] items-center justify-center text-muted/70 transition-colors hover:text-foreground"
+                    className="inline-flex items-center justify-center p-2 -m-2 text-muted/70 transition-colors hover:text-foreground"
                   >
-                    <FaGithub size={13} />
+                    <FaGithub size={14} />
                   </a>
                 )}
                 {project.link && (
@@ -108,9 +108,9 @@ export default function HomePage() {
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label={`${project.title} external link`}
-                    className="inline-flex min-h-[44px] min-w-[44px] items-center justify-center text-muted/70 transition-colors hover:text-foreground"
+                    className="inline-flex items-center justify-center p-2 -m-2 text-muted/70 transition-colors hover:text-foreground"
                   >
-                    <FaExternalLinkAlt size={11} />
+                    <FaExternalLinkAlt size={12} />
                   </a>
                 )}
               </div>
