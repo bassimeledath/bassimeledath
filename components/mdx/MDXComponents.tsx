@@ -57,7 +57,7 @@ export const mdxComponents: MDXComponents = {
     const isAnchor =
       typeof props.className === "string" && props.className.includes("anchor");
     if (isAnchor) {
-      return <a {...props} />;
+      return <a {...props} className="no-underline text-inherit" />;
     }
     return (
       <a
