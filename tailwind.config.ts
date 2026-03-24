@@ -70,6 +70,7 @@ const config: Config = {
               padding: "0",
             },
             pre: {
+              color: "rgb(var(--foreground))",
               backgroundColor: "rgb(var(--code-bg))",
               borderRadius: "0.5rem",
             },
