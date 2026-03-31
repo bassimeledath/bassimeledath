@@ -9,6 +9,7 @@ import TableOfContents from "@/components/TableOfContents";
 import ReadingProgress from "@/components/ReadingProgress";
 import { formatDate } from "@/lib/utils";
 import Link from "next/link";
+import SubscribeForm from "@/components/SubscribeForm";
 import type { Metadata } from "next";
 
 const getCachedPost = cache((slug: string) => getPostBySlug(slug));
@@ -105,6 +106,8 @@ export default function BlogPostPage({ params }: Props) {
             }}
           />
         </div>
+
+        <SubscribeForm />
       </article>
 
       <TableOfContents headings={headings} />
