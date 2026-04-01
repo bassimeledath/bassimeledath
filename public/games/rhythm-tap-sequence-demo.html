@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rhythm Tap Sequence</title>
+  <link href="https://fonts.googleapis.com/css2?family=Belanosima:wght@400;600;700&family=Nunito+Sans:wght@400;500;600;700&family=Nunito:wght@400;500;600&display=swap" rel="stylesheet">
+  <!--
+  ╔══════════════════════════════════════════════════════════════════════════════╗
+  ║  GAME FACTORY TEMPLATE                                                        ║
+  ║  This template enforces critical invariants. Follow the section markers.      ║
+  ╚══════════════════════════════════════════════════════════════════════════════╝
+  -->
+  <style>
+    /* ═══════════════════════════════════════════════════════════════════════════
+       BASE STYLES - Can be extended, not removed
+       ═══════════════════════════════════════════════════════════════════════════ */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+    }
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #1C1C1A;
+      font-family: 'Nunito Sans', system-ui, -apple-system, sans-serif;
+    }
+    #gameCanvas {
+      background: #2A2A27;
+      border-radius: 12px;
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <!-- ═══════════════════════════════════════════════════════════════════════════
+       CANVAS - Sized dynamically to fill available space
+       ═══════════════════════════════════════════════════════════════════════════ -->
+  <canvas id="gameCanvas"></canvas>
+
+  <script>
+  // ╔════════════════════════════════════════════════════════════════════════════╗
+  // ║  SECTION 1: QUESTION PLACEHOLDER - DO NOT MODIFY FORMAT                    ║
+  // ║  Platform replaces this at runtime. Use these exact 60-char answers.       ║
+  // ╚════════════════════════════════════════════════════════════════════════════╝
+  const QUESTION = {
+  "type": "mcq",
+  "prompt": "Who painted the Mona Lisa?",
+  "choices": [
+    {
+      "text": "Michelangelo",
+      "is_correct": false,
+      "explanation": "Michelangelo painted the Sistine Chapel ceiling."
+    },
+    {
+      "text": "Leonardo da Vinci",
+      "is_correct": true,
+      "explanation": "Da Vinci painted it between 1503 and 1519."
+    },
+    {
+      "text": "Raphael",
+      "is_correct": false,
+      "explanation": "Raphael was known for The School of Athens."
+    },
+    {
+      "text": "Donatello",
+      "is_correct": false,
+      "explanation": "Donatello was primarily a sculptor."
+    }
+  ],
+  "isLastQuestion": true
+};
+
+  // ╔════════════════════════════════════════════════════════════════════════════╗
+  // ║  SECTION 2: ENGINE CORE - DO NOT MODIFY                                    ║
+  // ║  Standard engine interface and end screen. This is sacred.                 ║
+  // ╚════════════════════════════════════════════════════════════════════════════╝
+  const canvas = document.getElementById('gameCanvas');
+  const ctx = canvas.getContext('2d');
+
+  // Logical dimensions (game code works in this coordinate space)
+  const W = 720, H = 540;
+
+  // Scaling state (computed on resize)
+  let scale = 1;
+  let dpr = 1;
+
+  let gameState = 'playing'; // 'playing' | 'ended'
+  let gameResult = null;     // true (correct) | false (wrong)
+  let gameExplanation = '';
+  let endScreenTime = 0;
+  let confettiParticles = [];
+
+  // End screen button bounds (logical coordinates)
+  const restartButton = { x: W / 2 - 170, y: H / 2 + 60, w: 150, h: 48 };
+  const nextButton = { x: W / 2 + 20, y: H / 2 + 60, w: 150, h: 48 };
+
+  /** Check if point is inside rectangle */
+  function pointInRect(px, py, rect) {
+    return px >= rect.x && px <= rect.x + rect.w &&
+           py >= rect.y && py <= rect.y + rect.h;
+  }
+
+  /** Draw a styled button */
+  function drawButton(rect, label, color, pulse) {
+    const p = pulse ? 1 + Math.sin(endScreenTime * 4) * 0.03 : 1;
+    ctx.save();
+    ctx.translate(rect.x + rect.w / 2, rect.y + rect.h / 2);
+    ctx.scale(p, p);
+    ctx.translate(-(rect.x + rect.w / 2), -(rect.y + rect.h / 2));
+
+    // Button background
+    ctx.fillStyle = color;
+    ctx.beginPath();
+    ctx.roundRect(rect.x, rect.y, rect.w, rect.h, 12);
+    ctx.fill();
+
+    // Button text
+    ctx.fillStyle = '#FFFFFF';
+    ctx.font = 'bold 18px system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(label, rect.x + rect.w / 2, rect.y + rect.h / 2);
+
+    ctx.restore();
+  }
+
+  /**
+   * Resize canvas to fill available space with proper DPR scaling.
+   * Maintains logical coordinate system (720×540).
+   */
+  function resizeCanvas() {
+    dpr = window.devicePixelRatio || 1;
+
+    // Get available space
+    const availW = window.innerWidth;
+    const availH = window.innerHeight;
+
+    // Calculate scale to fit logical space (720×540) in available space
+    const scaleX = availW / W;
+    const scaleY = availH / H;
+    scale = Math.min(scaleX, scaleY);
+
+    // Physical canvas buffer (DPR-scaled for crisp rendering)
+    canvas.width = W * scale * dpr;
+    canvas.height = H * scale * dpr;
+
+    // CSS display size
+    canvas.style.width = (W * scale) + 'px';
+    canvas.style.height = (H * scale) + 'px';
+  }
+
+  /**
+   * Convert screen coordinates to logical coordinates.
+   * Use this for mouse/click events to get positions in 720×540 space.
+   */
+  function screenToLogical(screenX, screenY) {
+    const rect = canvas.getBoundingClientRect();
+    return {
+      x: (screenX - rect.left) * (W / rect.width),
+      y: (screenY - rect.top) * (H / rect.height)
+    };
+  }
+
+  const engine = {
+    /** Call this to end the game. DO NOT draw your own end screen. */
+    end(isCorrect, explanation) {
+      if (gameState === 'ended') return;
+      gameState = 'ended';
+      gameResult = isCorrect;
+      gameExplanation = explanation || '';
+      endScreenTime = 0;
+
+      // Spawn confetti for correct answers
+      if (isCorrect) {
+        for (let i = 0; i < 50; i++) {
+          confettiParticles.push({
+            x: W / 2,
+            y: H / 2,
+            vx: (Math.random() - 0.5) * 600,
+            vy: -Math.random() * 400 - 100,
+            size: 4 + Math.random() * 6,
+            color: ['#FFD700', '#FF6B6B', '#4ECDC4', '#95E1D3', '#F38181'][Math.floor(Math.random() * 5)],
+            rotation: Math.random() * Math.PI * 2,
+            rotationSpeed: (Math.random() - 0.5) * 10
+          });
+        }
+      }
+
+      // Notify parent frame
+      if (window.parent && window.parent !== window) {
+        window.parent.postMessage({
+          type: 'quiz-end',
+          isCorrect: isCorrect,
+          explanation: explanation || ''
+        }, '*');
+      }
+    }
+  };
+
+  /** STANDARD END SCREEN - DO NOT MODIFY */
+  function drawEndScreen(dt) {
+    endScreenTime += dt;
+
+    // Update confetti
+    confettiParticles = confettiParticles.filter(p => {
+      p.vy += 800 * dt; // gravity
+      p.x += p.vx * dt;
+      p.y += p.vy * dt;
+      p.rotation += p.rotationSpeed * dt;
+      p.vx *= 0.99;
+      return p.y < H + 50;
+    });
+
+    // Dark overlay
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.85)';
+    ctx.fillRect(0, 0, W, H);
+
+    // Draw confetti
+    confettiParticles.forEach(p => {
+      ctx.save();
+      ctx.translate(p.x, p.y);
+      ctx.rotate(p.rotation);
+      ctx.fillStyle = p.color;
+      ctx.fillRect(-p.size / 2, -p.size / 4, p.size, p.size / 2);
+      ctx.restore();
+    });
+
+    // Result emoji
+    ctx.font = '72px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(gameResult ? '🎉' : '😢', W / 2, H / 2 - 50);
+
+    // Result text
+    ctx.fillStyle = gameResult ? '#4ADE80' : '#F87171';
+    ctx.font = 'bold 36px system-ui, sans-serif';
+    ctx.fillText(gameResult ? 'Correct!' : 'Wrong!', W / 2, H / 2 + 20);
+
+    // Buttons
+    if (gameResult) {
+      // Correct: show both Restart and Next/Finish
+      const nextLabel = QUESTION.isLastQuestion ? null : 'Next';
+      if (nextLabel) drawButton(restartButton, 'Restart', '#E87A3E', true); else drawButton(centeredRestartButton, 'Restart', '#E87A3E', true);
+            if (nextLabel) drawButton(nextButton, nextLabel, '#4ECDC4', true);
+    } else {
+      // Wrong: show only centered Restart button
+      const centeredRestart = { x: W / 2 - 75, y: H / 2 + 60, w: 150, h: 48 };
+      drawButton(centeredRestart, 'Restart', '#E87A3E', true);
+    }
+  }
+
+  // ╔════════════════════════════════════════════════════════════════════════════╗
+  // ║  SECTION 3: YOUR GAME CODE - IMPLEMENT THESE FUNCTIONS                     ║
+  // ║  This is where your game logic goes. See requirements below.               ║
+  // ╚════════════════════════════════════════════════════════════════════════════╝
+
+  // === COLORS (QuizHP palette) ===
+  const COLORS = {
+    bgPrimary: '#1C1C1A',
+    bgSurface: '#2A2A27',
+    bgSurfaceSecondary: '#363633',
+    textPrimary: '#F5F5F0',
+    textSecondary: '#C2C2B8',
+    textTertiary: '#8C8C84',
+    orange: '#E87A3E',
+    orangeHover: '#D66B31',
+    amber: '#F5A742',
+    cyan: '#4ECDC4',
+    success: '#6BBF59',
+    error: '#E85D4A',
+    borderSubtle: '#424240',
+    borderStrong: '#5A5A56'
+  };
+
+  // === AUDIO ===
+  let audioCtx = null;
+
+  function initAudio() {
+    if (!audioCtx) {
+      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    }
+  }
+
+  function playSound(type) {
+    if (!audioCtx) return;
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+
+    if (type === 'beat') {
+      osc.frequency.value = 220;
+      osc.type = 'sine';
+      gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+      gain.gain.exponentialDecayTo && gain.gain.exponentialDecayTo(0.01, audioCtx.currentTime + 0.1);
+      gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+      gain.gain.linearRampToValueAtTime(0.01, audioCtx.currentTime + 0.08);
+      osc.start(audioCtx.currentTime);
+      osc.stop(audioCtx.currentTime + 0.08);
+    } else if (type === 'tap') {
+      osc.frequency.value = 440;
+      osc.type = 'square';
+      gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+      gain.gain.linearRampToValueAtTime(0.01, audioCtx.currentTime + 0.05);
+      osc.start(audioCtx.currentTime);
+      osc.stop(audioCtx.currentTime + 0.05);
+    } else if (type === 'correct') {
+      osc.frequency.value = 523.25;
+      osc.type = 'sine';
+      gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+      gain.gain.linearRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+      osc.start(audioCtx.currentTime);
+      osc.stop(audioCtx.currentTime + 0.3);
+      // Second note
+      const osc2 = audioCtx.createOscillator();
+      const gain2 = audioCtx.createGain();
+      osc2.connect(gain2);
+      gain2.connect(audioCtx.destination);
+      osc2.frequency.value = 659.25;
+      osc2.type = 'sine';
+      gain2.gain.setValueAtTime(0.2, audioCtx.currentTime + 0.1);
+      gain2.gain.linearRampToValueAtTime(0.01, audioCtx.currentTime + 0.4);
+      osc2.start(audioCtx.currentTime + 0.1);
+      osc2.stop(audioCtx.currentTime + 0.4);
+    } else if (type === 'wrong') {
+      osc.frequency.value = 200;
+      osc.type = 'sawtooth';
+      gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+      gain.gain.linearRampToValueAtTime(0.01, audioCtx.currentTime + 0.2);
+      osc.start(audioCtx.currentTime);
+      osc.stop(audioCtx.currentTime + 0.2);
+    } else if (type === 'miss') {
+      osc.frequency.value = 150;
+      osc.type = 'triangle';
+      gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+      gain.gain.linearRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
+      osc.start(audioCtx.currentTime);
+      osc.stop(audioCtx.currentTime + 0.1);
+    }
+  }
+
+  // === GAME STATE ===
+  const PAD_SIZE = 160;
+  const PAD_SPACING = 20;
+  const GRID_START_X = (W - (PAD_SIZE * 2 + PAD_SPACING)) / 2;
+  const GRID_START_Y = 80;
+  const BPM = 100;
+  const BEAT_DURATION = 60 / BPM;
+  const HIT_WINDOW = 0.25; // Time window to hit the beat
+
+  let pads = [];
+  let beatTimer = 0;
+  let currentBeat = 0;
+  let sequenceIndex = 0;
+  let beatSequence = [0, 1, 2, 3]; // Which pads light up in order
+  let isOnBeat = false;
+  let beatPulse = 0;
+  let missedBeat = false;
+  let missFlashTimer = 0;
+  let selectedPad = -1;
+  let gameTime = 0;
+  let entranceAnim = 0;
+  let lastBeatIndex = -1;
+  let gameParticles = [];
+  let shakeOffset = { x: 0, y: 0 };
+  let shakeTimer = 0;
+
+  function initGame() {
+    initAudio();
+
+    // Create 4 pads in 2x2 grid
+    pads = QUESTION.choices.map((choice, i) => {
+      const col = i % 2;
+      const row = Math.floor(i / 2);
+      return {
+        x: GRID_START_X + col * (PAD_SIZE + PAD_SPACING),
+        y: GRID_START_Y + row * (PAD_SIZE + PAD_SPACING),
+        w: PAD_SIZE,
+        h: PAD_SIZE,
+        choice: choice,
+        index: i,
+        lit: false,
+        pressed: false,
+        pressAnim: 0,
+        scale: 0,
+        alpha: 0
+      };
+    });
+
+    // Randomize beat sequence
+    beatSequence = [0, 1, 2, 3].sort(() => Math.random() - 0.5);
+    beatTimer = 0;
+    currentBeat = 0;
+    sequenceIndex = 0;
+    isOnBeat = false;
+    beatPulse = 0;
+    missedBeat = false;
+    missFlashTimer = 0;
+    selectedPad = -1;
+    gameTime = 0;
+    entranceAnim = 0;
+    lastBeatIndex = -1;
+    gameParticles = [];
+    shakeOffset = { x: 0, y: 0 };
+    shakeTimer = 0;
+  }
+
+  function updateGame(dt) {
+    if (gameState !== 'playing') return;
+
+    gameTime += dt;
+    beatTimer += dt;
+    entranceAnim += dt;
+
+    // Entrance animation for pads
+    pads.forEach((pad, i) => {
+      const delay = i * 0.08;
+      const t = Math.max(0, Math.min(1, (entranceAnim - delay) / 0.35));
+      const spring = 1 + Math.sin(t * Math.PI * 2) * 0.2 * (1 - t);
+      pad.scale = t * spring;
+      pad.alpha = t;
+    });
+
+    // Update pad press animations
+    pads.forEach(pad => {
+      if (pad.pressAnim > 0) {
+        pad.pressAnim -= dt * 4;
+        if (pad.pressAnim < 0) pad.pressAnim = 0;
+      }
+    });
+
+    // Miss flash timer and shake
+    if (missFlashTimer > 0) {
+      missFlashTimer -= dt;
+    }
+    if (shakeTimer > 0) {
+      shakeTimer -= dt;
+      const decay = shakeTimer / 0.3;
+      shakeOffset.x = Math.sin(shakeTimer * 50) * 6 * decay;
+      shakeOffset.y = Math.cos(shakeTimer * 40) * 3 * decay;
+    } else {
+      shakeOffset.x = 0;
+      shakeOffset.y = 0;
+    }
+
+    // Update particles
+    gameParticles = gameParticles.filter(p => {
+      p.vy += 600 * dt;
+      p.x += p.vx * dt;
+      p.y += p.vy * dt;
+      p.rotation += p.rotationSpeed * dt;
+      p.alpha -= dt * 1.5;
+      return p.alpha > 0 && p.y < H + 50;
+    });
+
+    // Calculate beat timing
+    const beatProgress = beatTimer / BEAT_DURATION;
+    beatPulse = Math.sin(beatProgress * Math.PI);
+
+    // Determine which pad should be lit
+    const activePadIndex = beatSequence[sequenceIndex];
+
+    // Reset all pads lit state
+    pads.forEach(pad => pad.lit = false);
+
+    // Light up the active pad during the on-beat window
+    const beatPhase = beatTimer % BEAT_DURATION;
+    isOnBeat = beatPhase < HIT_WINDOW || beatPhase > (BEAT_DURATION - HIT_WINDOW * 0.5);
+
+    if (isOnBeat) {
+      pads[activePadIndex].lit = true;
+    }
+
+    // Play beat sound on new beat
+    if (sequenceIndex !== lastBeatIndex && isOnBeat) {
+      lastBeatIndex = sequenceIndex;
+      playSound('beat');
+    }
+
+    // Check for missed beat (player didn't tap when they should have)
+    if (beatTimer >= BEAT_DURATION) {
+      beatTimer -= BEAT_DURATION;
+      currentBeat++;
+
+      // Move to next in sequence
+      sequenceIndex = (sequenceIndex + 1) % 4;
+      lastBeatIndex = -1;
+    }
+  }
+
+  function drawGame() {
+    // Clear with dark background
+    ctx.fillStyle = COLORS.bgPrimary;
+    ctx.fillRect(0, 0, W, H);
+
+    ctx.save();
+    ctx.translate(shakeOffset.x, shakeOffset.y);
+
+    // Draw beat indicator at top
+    const indicatorY = 35;
+    const indicatorWidth = 400;
+    const indicatorX = (W - indicatorWidth) / 2;
+
+    // Beat bar background
+    ctx.fillStyle = COLORS.bgSurfaceSecondary;
+    ctx.beginPath();
+    ctx.roundRect(indicatorX, indicatorY - 10, indicatorWidth, 20, 10);
+    ctx.fill();
+
+    // Beat markers
+    for (let i = 0; i < 4; i++) {
+      const markerX = indicatorX + (i + 0.5) * (indicatorWidth / 4);
+      const isActive = i === sequenceIndex;
+      const markerSize = isActive ? 14 + beatPulse * 6 : 10;
+
+      // Glow for active
+      if (isActive) {
+        ctx.shadowColor = COLORS.orange;
+        ctx.shadowBlur = 15 + beatPulse * 10;
+      }
+
+      ctx.fillStyle = isActive ? COLORS.orange : COLORS.borderSubtle;
+      ctx.beginPath();
+      ctx.arc(markerX, indicatorY, markerSize / 2, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.shadowColor = 'transparent';
+      ctx.shadowBlur = 0;
+    }
+
+    // Draw pads
+    pads.forEach((pad, i) => {
+      if (pad.alpha < 0.01) return;
+
+      ctx.save();
+      ctx.globalAlpha = pad.alpha;
+
+      const centerX = pad.x + pad.w / 2;
+      const centerY = pad.y + pad.h / 2;
+      ctx.translate(centerX, centerY);
+      ctx.scale(pad.scale, pad.scale);
+      ctx.translate(-centerX, -centerY);
+
+      const pressOffset = pad.pressAnim * 6;
+
+      // Glow effect when lit
+      if (pad.lit) {
+        ctx.shadowColor = COLORS.orange;
+        ctx.shadowBlur = 35 + beatPulse * 25;
+      }
+
+      // Pad shape
+      const baseColor = pad.lit ? COLORS.orange : COLORS.bgSurface;
+      ctx.fillStyle = baseColor;
+      ctx.beginPath();
+      ctx.roundRect(pad.x, pad.y + pressOffset, pad.w, pad.h - pressOffset, 16);
+      ctx.fill();
+
+      ctx.shadowColor = 'transparent';
+      ctx.shadowBlur = 0;
+
+      // Pad border
+      ctx.strokeStyle = pad.lit ? COLORS.amber : COLORS.borderSubtle;
+      ctx.lineWidth = 3;
+      ctx.stroke();
+
+      // Pad letter label
+      ctx.fillStyle = pad.lit ? '#FFFFFF' : COLORS.textSecondary;
+      ctx.font = "700 28px 'Belanosima', sans-serif";
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'top';
+      ctx.fillText(String.fromCharCode(65 + i), pad.x + pad.w / 2, pad.y + 12 + pressOffset);
+
+      // Answer text - wrap it to fit
+      ctx.font = "400 14px 'Nunito', sans-serif";
+      ctx.fillStyle = pad.lit ? '#FFFFFF' : COLORS.textSecondary;
+      wrapText(pad.choice.text, pad.x + pad.w / 2, pad.y + 50 + pressOffset, pad.w - 20, 18);
+
+      ctx.restore();
+    });
+
+    // Draw particles
+    gameParticles.forEach(p => {
+      ctx.save();
+      ctx.globalAlpha = p.alpha;
+      ctx.translate(p.x, p.y);
+      ctx.rotate(p.rotation);
+      ctx.fillStyle = p.color;
+      ctx.fillRect(-p.size / 2, -p.size / 4, p.size, p.size / 2);
+      ctx.restore();
+    });
+
+    // Miss flash overlay
+    if (missFlashTimer > 0) {
+      ctx.fillStyle = `rgba(232, 93, 74, ${missFlashTimer * 0.25})`;
+      ctx.fillRect(0, 0, W, H);
+    }
+
+    ctx.restore(); // End shake transform
+
+    // Rhythm prompt text
+    ctx.fillStyle = COLORS.textSecondary;
+    ctx.font = "500 18px 'Nunito Sans', sans-serif";
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('Tap the correct answer when it lights up!', W / 2, H - 40);
+  }
+
+  // Helper function to wrap text
+  function wrapText(text, x, y, maxWidth, lineHeight) {
+    const words = text.split(' ');
+    let line = '';
+    let currentY = y;
+
+    for (let i = 0; i < words.length; i++) {
+      const testLine = line + words[i] + ' ';
+      const metrics = ctx.measureText(testLine);
+
+      if (metrics.width > maxWidth && i > 0) {
+        ctx.fillText(line.trim(), x, currentY);
+        line = words[i] + ' ';
+        currentY += lineHeight;
+      } else {
+        line = testLine;
+      }
+    }
+    ctx.fillText(line.trim(), x, currentY);
+  }
+
+  function spawnPadParticles(pad) {
+    const colors = [COLORS.orange, COLORS.amber, COLORS.cyan, COLORS.success];
+    for (let i = 0; i < 15; i++) {
+      gameParticles.push({
+        x: pad.x + pad.w / 2,
+        y: pad.y + pad.h / 2,
+        vx: (Math.random() - 0.5) * 300,
+        vy: -Math.random() * 200 - 50,
+        color: colors[Math.floor(Math.random() * colors.length)],
+        size: Math.random() * 8 + 4,
+        rotation: Math.random() * Math.PI * 2,
+        rotationSpeed: (Math.random() - 0.5) * 10,
+        alpha: 1
+      });
+    }
+  }
+
+  function handleInput(e) {
+    if (gameState !== 'playing') return;
+
+    // Number keys 1-4 to select pads
+    if (e.code >= 'Digit1' && e.code <= 'Digit4') {
+      const padIndex = parseInt(e.code.charAt(5)) - 1;
+      selectPad(padIndex);
+    }
+  }
+
+  function selectPad(padIndex) {
+    if (padIndex < 0 || padIndex >= pads.length) return;
+
+    const pad = pads[padIndex];
+    pad.pressAnim = 1;
+    playSound('tap');
+
+    // Check if this pad is currently lit (on beat)
+    if (pad.lit) {
+      // Player hit on the beat - this is their answer
+      selectedPad = padIndex;
+      spawnPadParticles(pad);
+      if (pad.choice.is_correct) {
+        playSound('correct');
+      } else {
+        playSound('wrong');
+      }
+      engine.end(pad.choice.is_correct, pad.choice.explanation);
+    } else {
+      // Off-beat tap - show miss feedback
+      missedBeat = true;
+      missFlashTimer = 0.3;
+      shakeTimer = 0.3;
+      playSound('miss');
+      // Reset sequence
+      sequenceIndex = 0;
+      beatTimer = 0;
+      lastBeatIndex = -1;
+    }
+  }
+
+  // ╔════════════════════════════════════════════════════════════════════════════╗
+  // ║  SECTION 4: GAME LOOP - DO NOT MODIFY                                      ║
+  // ║  Standard loop with responsive scaling and DPR support.                    ║
+  // ╚════════════════════════════════════════════════════════════════════════════╝
+  let lastTime = performance.now();
+
+  function gameLoop(now) {
+    const dt = Math.min((now - lastTime) / 1000, 0.05); // Cap at 50ms
+    lastTime = now;
+
+    // Apply transform for logical coordinate system
+    ctx.setTransform(scale * dpr, 0, 0, scale * dpr, 0, 0);
+
+    if (gameState === 'playing') {
+      updateGame(dt);
+      drawGame();
+    } else {
+      drawGame(); // Draw game state behind overlay
+      drawEndScreen(dt);
+    }
+
+    // Reset transform for next frame
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+
+    requestAnimationFrame(gameLoop);
+  }
+
+  // Input handlers
+  document.addEventListener('keydown', (e) => {
+    if (gameState === 'ended' && (e.code === 'KeyR')) {
+      // Restart game
+      gameState = 'playing';
+      gameResult = null;
+      gameExplanation = '';
+      confettiParticles = [];
+      initGame();
+      return;
+    }
+    handleInput(e);
+  });
+
+  document.addEventListener('keyup', (e) => {
+    // Optional: handle key release in your handleInput
+  });
+
+  // Canvas click handler for gameplay
+  canvas.addEventListener('click', (e) => {
+    const { x, y } = screenToLogical(e.clientX, e.clientY);
+
+    if (gameState === 'playing') {
+      // Check if clicked on a pad
+      for (let i = 0; i < pads.length; i++) {
+        const pad = pads[i];
+        if (x >= pad.x && x <= pad.x + pad.w && y >= pad.y && y <= pad.y + pad.h) {
+          selectPad(i);
+          return;
+        }
+      }
+    }
+
+    if (gameState !== 'ended') return;
+
+    if (gameResult) {
+      // Correct answer: check both buttons
+      if (pointInRect(x, y, restartButton) || pointInRect(x, y, centeredRestartButton)) {
+        gameState = 'playing';
+        gameResult = null;
+        gameExplanation = '';
+        confettiParticles = [];
+        initGame();
+        return;
+      }
+      if (nextLabel && pointInRect(x, y, nextButton)) {
+        // Notify parent to go to next question
+        if (window.parent && window.parent !== window) {
+          window.parent.postMessage({ type: 'quiz-next' }, '*');
+        }
+        return;
+      }
+    } else {
+      // Wrong answer: check centered restart button
+      const centeredRestart = { x: W / 2 - 75, y: H / 2 + 60, w: 150, h: 48 };
+      if (pointInRect(x, y, centeredRestart)) {
+        gameState = 'playing';
+        gameResult = null;
+        gameExplanation = '';
+        confettiParticles = [];
+        initGame();
+        return;
+      }
+    }
+  });
+
+  // Handle resize
+  window.addEventListener('resize', resizeCanvas);
+
+  // Initialize
+  resizeCanvas();
+  initGame();
+  requestAnimationFrame(gameLoop);
+  </script>
+</body>
+</html>
