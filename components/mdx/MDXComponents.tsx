@@ -3,12 +3,16 @@ import dynamic from "next/dynamic";
 import type { MDXComponents } from "mdx/types";
 import Mermaid from "./Mermaid";
 import LevelQuiz from "./LevelQuiz";
+import InvariantSpectrum from "./InvariantSpectrum";
+import InvariantAgents from "./InvariantAgents";
 const GameDemo = dynamic(() => import("./GameDemo"), { ssr: false });
 
 export const mdxComponents: MDXComponents = {
   "mermaid-chart": (props: { chart: string }) => <Mermaid chart={props.chart} />,
   LevelQuiz: () => <LevelQuiz />,
   GameDemo: () => <GameDemo />,
+  InvariantSpectrum: () => <InvariantSpectrum />,
+  InvariantAgents: () => <InvariantAgents />,
   p: (props) => {
     const children = props.children as React.ReactNode;
     // If the paragraph contains only an image, render as div to avoid <figure> inside <p>
