@@ -5,6 +5,7 @@ import Mermaid from "./Mermaid";
 import LevelQuiz from "./LevelQuiz";
 import InvariantSpectrum from "./InvariantSpectrum";
 import InvariantAgents from "./InvariantAgents";
+import InvariantTable from "./InvariantTable";
 const GameDemo = dynamic(() => import("./GameDemo"), { ssr: false });
 
 export const mdxComponents: MDXComponents = {
@@ -13,6 +14,7 @@ export const mdxComponents: MDXComponents = {
   GameDemo: () => <GameDemo />,
   InvariantSpectrum: () => <InvariantSpectrum />,
   InvariantAgents: () => <InvariantAgents />,
+  InvariantTable: () => <InvariantTable />,
   p: (props) => {
     const children = props.children as React.ReactNode;
     // If the paragraph contains only an image, render as div to avoid <figure> inside <p>

@@ -9,7 +9,7 @@ There's a design discipline driving every great AI product I've used that hasn't
 
 <InvariantSpectrum />
 
-Sounds like a straightforward thing-I-must-obviously-do, but most teams I've seen either constrain the agent too much and create something boring or barely useful (PowerPoint Copilot), or constrain too little and create something broken (that airline chatbot that offered a $1 ticket). The hard part, as I'll show, isn't implementing invariants, it's choosing them.
+Sounds like a straightforward thing-I-must-obviously-do, but most teams I've seen either constrain the agent too much and create something boring or barely useful (PowerPoint Copilot), or constrain too little and create something broken (that airline chatbot that offered a $1 ticket). The hard part isn't implementing invariants, it's choosing them.
 
 To be clear, invariant engineering already occupies significant mindshare today in agent sandboxing and defining boundaries around code execution. What's missing, in my opinion, is recognizing that the same discipline applies well beyond security. Non-determinism affects the quality and usability of every AI product, not just the safety of code execution.
 
@@ -27,10 +27,18 @@ But "more flexible" != "no invariants." The invariants just move up. Instead of 
 
 Designing tools for agents follows this pattern too. Claude Code famously has Bash, which can technically do everything: read files, search code, edit text. But the Bash tool description explicitly tells the model not to use it for any of that. Instead, six categories of operations get their own dedicated tools: Glob for finding files (not `find`), Grep for searching content, Read for viewing files (not `cat`), Edit for modifications (not `sed`). Bash is scoped to terminal operations like git and npm. Claude Code can combine any of its ~20 tools in any order (variant), but it can't use Bash to do what Read or Edit are designed for (invariant).
 
+<InvariantTable />
+
 ## Structure vs. surprise
 
 There's a structure vs. surprise trade-off running through all of these decisions. Gamma (presentation builder app), for example, never lets the AI place slide elements at arbitrary coordinates. It picks from predefined card layouts and the rendering engine handles spacing. Content and narrative are variant. Spatial design is invariant. Every deck looks polished, but every deck looks like a Gamma deck. If instead you let an LLM handle raw PowerPoint with no layout invariants, you do get more creative slides, albeit with many spacing mishaps that take some iteration to fix.
 
 I hit the same wall building an [autonomous game factory](https://www.bassimeledath.com/blog/game-factory) with Claude Code. Brand colors, fonts, and end screens were invariant, so each game looked consistent. Game mechanics, particle effects, and visual composition were completely free for the LLM to generate, so each game still had a unique touch to it.
+
+## Finding the boundary
+
+In my experience it's almost always better to start with a single LLM and a single prompt, then iteratively add constraints as you find the gaps. I like to simulate user interactions with my product using another LLM (better models also means better simulated customers). This surfaces edge cases fast: the agent skips a required field, invents a policy, offers a price that doesn't exist. Each of those tells you where an invariant is missing.
+
+Over time, the constraints accumulate and you often end up too far in the other direction: multi-agent workflows, specialized tools, rigid pipelines. But those systems are brittle and regression-prone, so you simplify. If the model getting it wrong is expensive and the right answer is specifiable, make it invariant. If that's where the output gets interesting and mistakes are cheap to fix or the model can self-correct, leave it variant.
 
 So try an invariant audit. Review what's currently fixed or free in your system and ask whether pushing that boundary in either direction improves output. New, more intelligent model releases should prompt you to revisit your invariant map regularly, because capabilities that once needed to be locked down might now be safe to open up. But don't mistake model improvement for the end of the discipline. The boundary between fixed and free shifts, but it never disappears.
