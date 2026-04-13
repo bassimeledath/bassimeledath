@@ -33,7 +33,7 @@ export default function InvariantAgents() {
       `}</style>
       <div className="my-8 flex justify-center">
         <div className="flex flex-col sm:flex-row gap-4 sm:gap-5 w-full max-w-[620px]">
-          {/* Claims Intake Agent */}
+          {/* Insurance Claims Agent */}
           <div
             className="flex-1 rounded-md flex flex-col gap-3.5"
             style={{ border: `1.5px solid ${borderColor}`, padding: "20px 16px" }}
@@ -46,7 +46,7 @@ export default function InvariantAgents() {
                 borderBottom: `1.5px solid ${borderColor}`,
               }}
             >
-              Claims Intake Agent
+              Insurance Claims Agent
             </div>
 
             {[
