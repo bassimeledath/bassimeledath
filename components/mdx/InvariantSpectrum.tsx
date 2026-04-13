@@ -1,7 +1,7 @@
 export default function InvariantSpectrum() {
   return (
-    <div className="my-10 flex justify-center">
-      <div className="w-full max-w-[520px]">
+    <div className="my-10 flex justify-center px-4">
+      <div className="w-full max-w-[520px] mx-auto">
         <div className="flex justify-between mb-2.5">
           <span className="text-sm font-semibold text-[#B05A4A] dark:text-[#E8A090]">
             Broken

@@ -14,6 +14,11 @@ const rows = [
     fixed: ["Tool boundaries (Bash can't do what Read/Edit do)"],
     free: ["Which tools to use", "What order", "How to combine them"],
   },
+  {
+    system: "Gamma",
+    fixed: ["Card layouts", "Element spacing", "Rendering engine"],
+    free: ["Content", "Narrative", "Visual composition"],
+  },
 ];
 
 export default function InvariantTable() {

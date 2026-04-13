@@ -9,31 +9,31 @@ There's a design discipline driving every great AI product I've used that hasn't
 
 <InvariantSpectrum />
 
-Sounds like a straightforward thing-I-must-obviously-do, but most teams I've seen either constrain the agent too much and create something boring or barely useful (PowerPoint Copilot), or constrain too little and create something broken (that airline chatbot that offered a $1 ticket). The hard part isn't implementing invariants, it's choosing them.
+Sounds like a straightforward thing-I-must-obviously-do, but most teams I've seen either constrain the agent too much and create something boring or barely useful (Copilot for PowerPoint), or constrain too little and create something broken (that airline chatbot that offered a $1 ticket). The hard part isn't implementing invariants, it's choosing them.
 
 To be clear, invariant engineering already occupies significant mindshare today in agent sandboxing and defining boundaries around code execution. What's missing, in my opinion, is recognizing that the same discipline applies well beyond security. Non-determinism affects the quality and usability of every AI product, not just the safety of code execution.
 
 ## Invariants in practice
 
-Take AI for customer support. An insurance claims agent needs to collect a policy number, date of incident, and damage description in a specific order with specific phrasing. That flow is maybe 80% fixed. The only thing free is how it handles curveballs between steps, like clarifying questions.
+Take AI for customer support. You scratch your car and call your insurance company. The agent needs your policy number, then the date it happened, then a description of the damage. Always that order, always those questions. An insurance claims agent that automates this needs to collect the same information in the same sequence. That flow is maybe 80% fixed. The only thing free is how it handles curveballs between steps, like clarifying questions.
 
 So stuffing the ordered list of questions into a single prompt is risky, because the LLM (usually a smaller model that can respond quickly) could mix up the order or skip questions entirely. You'd want your agent's harness to own the sequencing, not the LLM. Define the flow as a state machine and have the agent harness inject only the current question into the prompt each turn. The LLM's job shrinks to something it's actually good at: extracting a structured answer from messy human input. Did the customer say "last Tuesday, maybe Wednesday" for date of incident? Parse that. But the LLM never decides what to ask next. **A prompt that says "ask these five questions in order" is a suggestion. A harness that only surfaces question 3 after question 2 is answered is an invariant.** The LLM can't skip a step it never sees.
 
 <InvariantAgents />
 
-On the other hand, a general troubleshooting support agent needs to be more flexible. A user could call about one of many issues regarding one of many possible devices. And there can be one of many ways to troubleshoot their problem. The agent's problem-solving approach looks more Claude Code-esque: searching a knowledge base, reasoning about what to try, adapting based on what works. You can't pre-define a state machine here because the space of possible conversations is far more combinatorial.
+On the other hand, think about calling tech support because your Wi-Fi keeps dropping. There's no script for this. The agent needs to figure out what's wrong, which could be anything from a loose cable to a firmware bug to an outage in your area. The agent's problem-solving approach looks more Claude Code-esque: searching a knowledge base, reasoning about what to try, adapting based on what works. You can't pre-define a state machine here because the space of possible conversations is far more combinatorial.
 
 But "more flexible" != "no invariants." The invariants just move up. Instead of locking down what the agent says, you lock down how it operates. Require the agent to search documentation before offering advice, never after. Without this invariant, you may get an agent that hallucinates a fix, gets challenged, and then searches for the real answer. Unlike the claims agent, the troubleshooting agent's invariants are structural, not content-based.
 
 Designing tools for agents follows this pattern too. Claude Code famously has Bash, which can technically do everything: read files, search code, edit text. But the Bash tool description explicitly tells the model not to use it for any of that. Instead, six categories of operations get their own dedicated tools: Glob for finding files (not `find`), Grep for searching content, Read for viewing files (not `cat`), Edit for modifications (not `sed`). Bash is scoped to terminal operations like git and npm. Claude Code can combine any of its ~20 tools in any order (variant), but it can't use Bash to do what Read or Edit are designed for (invariant).
-
-<InvariantTable />
 
 ## Structure vs. surprise
 
 There's a structure vs. surprise trade-off running through all of these decisions. Gamma (presentation builder app), for example, never lets the AI place slide elements at arbitrary coordinates. It picks from predefined card layouts and the rendering engine handles spacing. Content and narrative are variant. Spatial design is invariant. Every deck looks polished, but every deck looks like a Gamma deck. If instead you let an LLM handle raw PowerPoint with no layout invariants, you do get more creative slides, albeit with many spacing mishaps that take some iteration to fix.
 
 I hit the same wall building an [autonomous game factory](https://www.bassimeledath.com/blog/game-factory) with Claude Code. Brand colors, fonts, and end screens were invariant, so each game looked consistent. Game mechanics, particle effects, and visual composition were completely free for the LLM to generate, so each game still had a unique touch to it.
+
+<InvariantTable />
 
 ## Finding the boundary
 
