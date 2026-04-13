@@ -1,6 +1,6 @@
 export default function InvariantSpectrum() {
   return (
-    <div className="my-8 flex justify-center">
+    <div className="my-10 flex justify-center">
       <div className="w-full max-w-[520px]">
         <div className="flex justify-between mb-2.5">
           <span className="text-sm font-semibold text-[#B05A4A] dark:text-[#E8A090]">
@@ -10,18 +10,21 @@ export default function InvariantSpectrum() {
             Boring
           </span>
         </div>
-        <div
-          className="h-7 rounded-full relative"
-          style={{
-            background:
-              "linear-gradient(to right, #D9A49A, #D97757 35%, #D97757 65%, #D5CEC4)",
-          }}
-        >
+        <div className="relative">
+          {/* Annotation above the bar */}
+          <div className="absolute left-1/2 -translate-x-1/2 -top-11 flex flex-col items-center gap-1">
+            <span className="text-xs font-medium text-[#D97757] dark:text-[#E8A080] whitespace-nowrap">
+              your AI agent
+            </span>
+            <svg width="12" height="10" viewBox="0 0 12 10">
+              <path d="M6 10 L0 0 L12 0 Z" fill="#D97757" />
+            </svg>
+          </div>
           <div
-            className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-2.5 h-2.5 rounded-full"
+            className="h-7 rounded-full"
             style={{
-              backgroundColor: "rgb(var(--background))",
-              boxShadow: "0 0 0 2px #D97757",
+              background:
+                "linear-gradient(to right, #D9A49A, #D97757 35%, #D97757 65%, #D5CEC4)",
             }}
           />
         </div>
