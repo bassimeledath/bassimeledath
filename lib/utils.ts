@@ -3,5 +3,6 @@ export function formatDate(iso: string) {
     year: "numeric",
     month: "long",
     day: "numeric",
+    timeZone: "America/Los_Angeles",
   });
 }
