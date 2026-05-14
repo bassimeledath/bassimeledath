@@ -8,6 +8,29 @@ import InvariantAgents from "./InvariantAgents";
 import InvariantTable from "./InvariantTable";
 const GameDemo = dynamic(() => import("./GameDemo"), { ssr: false });
 
+function VibeCodingMeme() {
+  return (
+    <figure className="my-6">
+      <Image
+        src="/images/blog/vibe-coding.webp"
+        alt=""
+        width={520}
+        height={520}
+        className="mx-auto rounded-lg"
+        sizes="(max-width: 640px) 100vw, 520px"
+      />
+      <figcaption className="mt-2 text-center text-sm text-muted">
+        <a
+          href="https://www.reddit.com/r/vibecodingmemes/comments/1l5j2lt/vibe_coding_be_like/"
+          className="text-foreground underline decoration-[rgb(var(--link-underline))] underline-offset-[3px] transition-[text-decoration-color] hover:decoration-accent"
+        >
+          Vibe coding be like
+        </a>
+      </figcaption>
+    </figure>
+  );
+}
+
 export const mdxComponents: MDXComponents = {
   "mermaid-chart": (props: { chart: string }) => <Mermaid chart={props.chart} />,
   LevelQuiz: () => <LevelQuiz />,
@@ -15,6 +38,7 @@ export const mdxComponents: MDXComponents = {
   InvariantSpectrum: () => <InvariantSpectrum />,
   InvariantAgents: () => <InvariantAgents />,
   InvariantTable: () => <InvariantTable />,
+  VibeCodingMeme: () => <VibeCodingMeme />,
   p: (props) => {
     const children = props.children as React.ReactNode;
     // If the paragraph contains only an image, render as div to avoid <figure> inside <p>
