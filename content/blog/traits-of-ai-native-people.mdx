@@ -47,7 +47,7 @@ Throwing more tokens at a problem, using more reasoning tokens, spending more LL
 
 Some of them are big brained and inherently good at it. Most, though, have built strong systems. Some use local memory systems. Some use LLMs to manage other LLMs. Some are simply disciplined about naming, summarizing, and storing context for future retrieval.
 
-This also makes AI-native people progressive learners. They don't learn every system from the bottom up before touching it, but they also don't use AI as an excuse to stay ignorant. They learn in layers: enough to move, enough to know what assumptions they're making, and enough to recognize when an abstraction is starting to leak. A shallow understanding may be fine for a demo, but not when changing a payments flow, permissions model, pricing rule, or shared component other teams depend on. AI-native people use AI to build the map, then go deeper where the risk is highest. And when they do, they codify what they learn into tests, docs, evals, comments, or guardrails so the important parts are easier to retrieve, verify, and reuse later for their LLMs.
+This also makes AI-native people progressive learners. They don't learn every system from the bottom up before touching it, but they also don't use AI as an excuse to stay ignorant. They learn in layers: enough to move, enough to know what assumptions they're making, and enough to recognize when an abstraction is starting to leak. A shallow understanding may be fine for a demo, but not when changing a payments flow, permissions model, or shared component other teams depend on. AI-native people use AI to build the map, then go deeper where the risk is highest. And when they do, they codify what they learn into tests, evals, or guardrails so the important parts are easier to retrieve, verify, and reuse later for their LLMs.
 
 ## 5. Moulders of raw material
 
@@ -59,7 +59,7 @@ The first output is not always the thing you actually want, even when you've spe
 
 This is a different muscle than pushing through writer's block. You are not waiting for inspiration, and you are not treating the model's first answer as the answer. You are creating something to react to. Each reaction sharpens your taste, exposes a new option, or reveals what you actually meant.
 
-Crucially, AI-native people use this to increase their decision space, not shrink it. Beginners often let the model choose for them without realizing it. AI-native people use the model to generate more points of judgment: more directions, more contrasts, more tradeoffs, and more ways to see the problem. Instead of prompting "create a settings page for the app", they ask for 5 variations of what the page could look like, and ask what configurations could be exposed on the page. The point is not to avoid making decisions. It is to create better decisions to make.
+Crucially, AI-native people use this to increase their decision space, not shrink it. Beginners often let the model choose for them without realizing it. AI-native people use the model to generate more points of judgment: more directions, more contrasts, and more tradeoffs. Instead of prompting "create a settings page for the app", they ask for 5 variations of what the page could look like, and ask what configurations could be exposed on the page. The point is not to avoid making decisions. It is to create better decisions to make.
 
 ## 6. Feedback loop pilled
 
@@ -69,8 +69,8 @@ When they don't have real customers using their product, they simulate customers
 
 ## 7. Masters of alignment
 
-Before LLMs, implementation was expensive and time-consuming, so alignment often happened through natural checkpoints: kickoff meetings, design reviews, Slack debates, draft PRs, code review, and all the conversations in between. The work moved slowly enough that teams had time to notice when they were building the wrong thing.
+Before LLMs, implementation was expensive and time-consuming, so alignment often happened through natural checkpoints: kickoff meetings, design reviews, code review, and all the conversations in between. The work moved slowly enough that teams had time to notice when they were building the wrong thing.
 
-Now implementation is cheap enough that many people skip those checkpoints altogether. An issue can become a working PR in minutes. But skipping alignment does not remove the need for it; it just moves the cost later. You get features nobody asked for, duplicated work, giant PRs nobody has context for, agents touching the same files in conflicting ways, and teams producing more output without producing more impact.
+Now implementation is cheap enough that many people skip those checkpoints altogether. An issue can become a working PR in minutes. But skipping alignment does not remove the need for it; it just moves the cost later. You get features nobody asked for, agents touching the same files in conflicting ways, and teams producing more output without producing more impact.
 
-AI-native people understand that alignment has to become a shared input to the work, not a late review of the output. The plan, assumptions, open questions, non-goals, customer context, and decision history need to be visible to the team (humans) and usable by the agents.
+AI-native people understand that alignment has to become a shared input to the work, not a late review of the output. The plan, open questions, and decision history need to be visible to the team (humans) and usable by the agents.
