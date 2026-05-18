@@ -1,0 +1,41 @@
+---
+title: "How to Tokenmaxx"
+description: "Tokenmaxxing is fine if the tokens go toward planning, verification, context, feedback loops, and agent-friendly output. It is a terrible proxy for AI competence on its own."
+tags: ["AI", "LLMs", "Work"]
+published: "2026-05-14T02:00:37-07:00"
+modified: "2026-05-20T00:00:00-07:00"
+---
+
+[Tokenmaxxing](https://en.wikipedia.org/wiki/Token_maxxing) has been getting a lot of attention lately (mostly bad). Uber [burned](https://www.forbes.com/sites/janakirammsv/2026/05/17/uber-burns-its-2026-ai-budget-in-four-months-on-claude-code/) their AI budget for the year in four months, Amazon employees are being pressured to [inflate](https://arstechnica.com/ai/2026/05/amazon-employees-are-tokenmaxxing-due-to-pressure-to-use-ai-tools/) their AI usage, and our messiah Jensen wants his best engineers to [consume](https://www.businessinsider.com/jensen-huang-500k-engineers-250k-ai-tokens-nvidia-compute-2026-3) at least $250,000 worth of tokens.
+
+I'm not, in fact, advocating for you to curb your token usage. You're at an all-you-can-eat buffet and your company is paying for it - absolutely take advantage. But there's a difference between eating well and stuffing your face until you sicken. Tokenmaxxing poorly leads to production failures, tech debt hell, and an AI-spend invoice with nothing to show for it.
+
+I've compiled the following token usage patterns I've observed among the best AI engineers in my circle:
+
+## 1. Diversify your tokens
+
+Leverage the wisdom of crowds and use multiple models from different providers. Most of your tokens shouldn't go towards implementation, they should go towards planning, verification, and gathering all the right context before implementation. My favorite interview question I ask candidates is "what does your token ratio look like?".
+
+## 2. Be an adversarial verifier
+
+Turn vague problems into verifiable ones. Building a customer support bot? Skip the vibes-based "rate this reply 1-5" and define verifiable checks: did it escalate the angry customer, cite the right policy, and not invent a refund? Then get adversarial: decouple the implementer from the verifier and point one model at breaking the other's work, surfacing flaws and stress-testing the edge cases.
+
+## 3. Vibe prototype
+
+Treat first outputs as raw material, not the final output. Generate code with the upfront intention of discarding most of it. Ask for 5 variations for what the checkout page for your app should look like and choose. Use LLMs to widen your decision space, not shrink it: more options to judge, not fewer decisions to make.
+
+## 4. Think in feedback loops
+
+Base your prompt and architecture changes on real production logs, not hunches. Then build an automated pipeline that makes it easy to spot patterns (some call these "failure modes") among the bad sessions. Then have that system raise PRs and automatically add them to benchmarks/tests so your system doesn't regress. You now have a self-improving system/harness.
+
+No real users yet? Simulate them with LLM-as-customer and judge those sessions with LLM-as-judge. LLMs getting better means you get better LLM-as-\<persona\>.
+
+## 5. Care about other people's LLMs (so they can better spend their tokens)
+
+Our job today is mostly facilitating communication between LLMs with different contexts, whether that's two Claude Code instances on your machine or your coworker's. Make your output agent-friendly (markdown is a fine default) and care about Agent Experience (AX) as much as UI/UX. Broken context/docs are just as bad for agents as they are for human engineers.
+
+---
+
+A VP I talked to recently mentioned LLMs have more of a magnifying effect than a compounding one. Bad engineers don't become good because they use AI; they just produce more bad code, faster, and confidently. Great engineers, especially the ones using the patterns above, become dramatically more effective. So tokenmaxx all you want, just make sure you're doing it right.
+
+Special thanks to [Pranav Sathyanarayanan](https://www.linkedin.com/in/pranavsathy/) for reviewing the draft and inspiring some of the ideas here.
