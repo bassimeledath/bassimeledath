@@ -8,7 +8,7 @@ import SubscribeForm from "@/components/SubscribeForm";
 import TableOfContents from "@/components/TableOfContents";
 import { mdxComponents } from "@/components/mdx/MDXComponents";
 import { extractHeadings } from "@/lib/extract-headings";
-import { getPostBySlug } from "@/lib/blog";
+import { getPostBySlug, getPostPath } from "@/lib/blog";
 import { remarkPlugins, rehypePlugins } from "@/lib/mdx-options";
 import { formatDate } from "@/lib/utils";
 
@@ -17,19 +17,28 @@ const getCachedPost = cache((slug: string) => getPostBySlug(slug));
 export function getBlogPostMetadata(slug: string): Metadata {
   try {
     const post = getCachedPost(slug);
+    const title = `${post.title} — Bassim Eledath`;
+    const url = getPostPath(post.slug);
     const metadata: Metadata = {
-      title: `${post.title} — Bassim Eledath`,
+      title,
       description: post.description,
+      alternates: {
+        canonical: url,
+      },
+      openGraph: {
+        title,
+        description: post.description,
+        url,
+        type: "article",
+        images: post.thumbnail ? [{ url: post.thumbnail }] : undefined,
+      },
+      twitter: {
+        card: post.thumbnail ? "summary_large_image" : "summary",
+        title,
+        description: post.description,
+        images: post.thumbnail ? [post.thumbnail] : undefined,
+      },
     };
-    if (post.thumbnail) {
-      metadata.openGraph = {
-        images: [{ url: post.thumbnail }],
-      };
-      metadata.twitter = {
-        card: "summary_large_image",
-        images: [post.thumbnail],
-      };
-    }
     return metadata;
   } catch {
     return { title: "Post Not Found" };

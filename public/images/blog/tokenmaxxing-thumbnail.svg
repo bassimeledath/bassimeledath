@@ -1,0 +1,33 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="630" fill="#F7F6F1"/>
+  <text x="600" y="104" text-anchor="middle" fill="#0E0E0E" font-family="Arial, Helvetica, sans-serif" font-size="54" font-weight="700">Guide to Tokenmaxxing</text>
+
+  <line x1="600" y1="172" x2="600" y2="540" stroke="#B8B4AA" stroke-width="2"/>
+
+  <text x="190" y="222" fill="#155C35" font-family="Arial, Helvetica, sans-serif" font-size="44" font-weight="700">DO</text>
+  <circle cx="295" cy="204" r="22" fill="#2D7D4F"/>
+  <path d="M284 203.5L292 211.5L308 193.5" stroke="#F7F6F1" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <circle cx="118" cy="282" r="5.5" fill="#114D2E"/>
+  <text x="146" y="297" fill="#114D2E" font-family="Arial, Helvetica, sans-serif" font-size="34" font-weight="400">Diversify your tokens</text>
+  <circle cx="118" cy="342" r="5.5" fill="#114D2E"/>
+  <text x="146" y="357" fill="#114D2E" font-family="Arial, Helvetica, sans-serif" font-size="34" font-weight="400">Pit models against each</text>
+  <text x="146" y="397" fill="#114D2E" font-family="Arial, Helvetica, sans-serif" font-size="34" font-weight="400">other</text>
+  <circle cx="118" cy="450" r="5.5" fill="#114D2E"/>
+  <text x="146" y="465" fill="#114D2E" font-family="Arial, Helvetica, sans-serif" font-size="34" font-weight="400">Optimize for Agent</text>
+  <text x="146" y="505" fill="#114D2E" font-family="Arial, Helvetica, sans-serif" font-size="34" font-weight="400">Experience (AX)</text>
+  <circle cx="118" cy="564" r="5.5" fill="#114D2E"/>
+  <text x="146" y="579" fill="#114D2E" font-family="Arial, Helvetica, sans-serif" font-size="34" font-weight="400">Simulate your users</text>
+
+  <text x="760" y="222" fill="#B44846" font-family="Arial, Helvetica, sans-serif" font-size="44" font-weight="700">DON'T</text>
+  <path d="M905 184L940 219M940 184L905 219" stroke="#B44846" stroke-width="9" stroke-linecap="round"/>
+
+  <circle cx="748" cy="282" r="5.5" fill="#8C2723"/>
+  <text x="776" y="297" fill="#8C2723" font-family="Arial, Helvetica, sans-serif" font-size="34" font-weight="400">Spend most of your tokens</text>
+  <text x="776" y="337" fill="#8C2723" font-family="Arial, Helvetica, sans-serif" font-size="34" font-weight="400">on implementation</text>
+  <circle cx="748" cy="408" r="5.5" fill="#8C2723"/>
+  <text x="776" y="423" fill="#8C2723" font-family="Arial, Helvetica, sans-serif" font-size="34" font-weight="400">Let one model grade itself</text>
+  <circle cx="748" cy="490" r="5.5" fill="#8C2723"/>
+  <text x="776" y="505" fill="#8C2723" font-family="Arial, Helvetica, sans-serif" font-size="34" font-weight="400">Make prompt changes on</text>
+  <text x="776" y="545" fill="#8C2723" font-family="Arial, Helvetica, sans-serif" font-size="34" font-weight="400">a hunch</text>
+</svg>
