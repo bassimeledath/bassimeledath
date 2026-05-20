@@ -9,7 +9,6 @@ export interface BlogPost {
   title: string;
   description: string;
   thumbnail?: string;
-  tags: string[];
   published: string;
   modified: string;
   content: string;
@@ -47,11 +46,14 @@ export function getPostBySlug(slug: string): BlogPost {
     title: data.title || slug,
     description: data.description || "",
     thumbnail: data.thumbnail,
-    tags: data.tags || [],
     published,
     modified,
     content,
   };
+}
+
+export function getPostPath(slug: string): string {
+  return slug === "tokenmaxxing" ? "/tokenmaxxing" : `/blog/${slug}`;
 }
 
 /** Extract the first plain-text snippet from MDX content. */
