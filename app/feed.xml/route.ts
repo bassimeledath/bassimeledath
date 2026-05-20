@@ -1,4 +1,4 @@
-import { getAllPosts, getExcerpt } from "@/lib/blog";
+import { getAllPosts, getExcerpt, getPostPath } from "@/lib/blog";
 
 export const dynamic = "force-dynamic";
 
@@ -19,15 +19,12 @@ export async function GET() {
 
   const items = posts
     .map((post) => {
-      const url = `${SITE_URL}/blog/${post.slug}`;
+      const url = `${SITE_URL}${getPostPath(post.slug)}`;
       const pubDate = new Date(post.published).toUTCString();
       const description = escapeXml(
         post.description || getExcerpt(post.content)
       );
       const title = escapeXml(post.title);
-      const categories = post.tags
-        .map((tag) => `<category>${escapeXml(tag)}</category>`)
-        .join("\n        ");
 
       return `
     <item>
@@ -36,7 +33,6 @@ export async function GET() {
       <guid isPermaLink="true">${escapeXml(url)}</guid>
       <pubDate>${pubDate}</pubDate>
       <description>${description}</description>
-      ${categories}
     </item>`;
     })
     .join("");

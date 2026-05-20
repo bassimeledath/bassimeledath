@@ -1,18 +1,8 @@
-import { cache } from "react";
-import { notFound } from "next/navigation";
-import { MDXRemote } from "next-mdx-remote/rsc";
-import { getAllPostSlugs, getPostBySlug } from "@/lib/blog";
-import { remarkPlugins, rehypePlugins } from "@/lib/mdx-options";
-import { extractHeadings } from "@/lib/extract-headings";
-import { mdxComponents } from "@/components/mdx/MDXComponents";
-import TableOfContents from "@/components/TableOfContents";
-import ReadingProgress from "@/components/ReadingProgress";
-import { formatDate } from "@/lib/utils";
-import Link from "next/link";
-import SubscribeForm from "@/components/SubscribeForm";
 import type { Metadata } from "next";
-
-const getCachedPost = cache((slug: string) => getPostBySlug(slug));
+import BlogPostPageContent, {
+  getBlogPostMetadata,
+} from "@/components/blog/BlogPostPageContent";
+import { getAllPostSlugs } from "@/lib/blog";
 
 interface Props {
   params: { slug: string };
@@ -23,94 +13,9 @@ export function generateStaticParams() {
 }
 
 export function generateMetadata({ params }: Props): Metadata {
-  try {
-    const post = getCachedPost(params.slug);
-    const metadata: Metadata = {
-      title: `${post.title} — Bassim Eledath`,
-      description: post.description,
-    };
-    if (post.thumbnail) {
-      metadata.openGraph = {
-        images: [{ url: post.thumbnail }],
-      };
-      metadata.twitter = {
-        card: "summary_large_image",
-        images: [post.thumbnail],
-      };
-    }
-    return metadata;
-  } catch {
-    return { title: "Post Not Found" };
-  }
+  return getBlogPostMetadata(params.slug);
 }
 
 export default function BlogPostPage({ params }: Props) {
-  let post;
-  try {
-    post = getCachedPost(params.slug);
-  } catch {
-    notFound();
-  }
-
-  const headings = extractHeadings(post.content);
-  const showModified =
-    post.modified &&
-    post.published &&
-    post.modified.slice(0, 10) !== post.published.slice(0, 10);
-
-  return (
-    <div className="relative py-16 toc:flex toc:gap-16 toc:justify-center">
-      <ReadingProgress />
-      <article className="mx-auto max-w-[72ch] toc:mx-0">
-        <Link
-          href="/blog"
-          className="mb-8 inline-flex items-center gap-1 text-sm text-muted transition-colors hover:text-foreground"
-        >
-          &larr; All posts
-        </Link>
-        <header className="mb-10">
-          <h1 className="font-serif text-3xl font-medium tracking-tight text-foreground sm:text-4xl">
-            {post.title}
-          </h1>
-          <div className="mt-3 flex flex-wrap gap-x-4 text-sm text-muted">
-            <time>{formatDate(post.published)}</time>
-            {showModified && (
-              <span className="text-muted/60">
-                Updated {formatDate(post.modified)}
-              </span>
-            )}
-          </div>
-          {post.tags.length > 0 && (
-            <div className="mt-4 flex flex-wrap gap-2">
-              {post.tags.map((tag) => (
-                <span
-                  key={tag}
-                  className="rounded-full bg-[rgb(var(--tag-bg))] px-2.5 py-0.5 text-xs text-muted"
-                >
-                  {tag}
-                </span>
-              ))}
-            </div>
-          )}
-        </header>
-
-        <div className="prose prose-lg max-w-none">
-          <MDXRemote
-            source={post.content}
-            components={mdxComponents}
-            options={{
-              mdxOptions: {
-                remarkPlugins: remarkPlugins as never,
-                rehypePlugins: rehypePlugins as never,
-              },
-            }}
-          />
-        </div>
-
-        <SubscribeForm />
-      </article>
-
-      <TableOfContents headings={headings} />
-    </div>
-  );
+  return <BlogPostPageContent slug={params.slug} />;
 }

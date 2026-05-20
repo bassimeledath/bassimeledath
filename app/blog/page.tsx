@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { FiArrowUpRight } from "react-icons/fi";
-import { getAllPosts, getExcerpt } from "@/lib/blog";
+import { getAllPosts, getExcerpt, getPostPath } from "@/lib/blog";
 import { formatDate } from "@/lib/utils";
 
 export default function BlogPage() {
@@ -18,23 +18,11 @@ export default function BlogPage() {
         {posts.map((post, i) => (
           <Link
             key={post.slug}
-            href={`/blog/${post.slug}`}
+            href={getPostPath(post.slug)}
             className="animate-fade-up group flex flex-col rounded-lg border border-border p-5 transition-all duration-200 hover:border-muted hover:-translate-y-0.5 hover:shadow-sm"
             style={{ animationDelay: `${(i + 1) * 80}ms` }}
           >
-            <div className="flex items-center justify-between text-xs text-muted">
-              <div className="flex gap-1.5">
-                {post.tags.length > 0
-                  ? post.tags.slice(0, 2).map((tag) => (
-                      <span
-                        key={tag}
-                        className="rounded-full bg-[rgb(var(--tag-bg))] px-2 py-0.5 text-xs text-muted"
-                      >
-                        {tag}
-                      </span>
-                    ))
-                  : <span className="rounded-full bg-[rgb(var(--tag-bg))] px-2 py-0.5 text-xs text-muted">Writing</span>}
-              </div>
+            <div className="flex justify-end text-muted">
               <FiArrowUpRight
                 size={14}
                 className="opacity-0 transition-opacity group-hover:opacity-100"
