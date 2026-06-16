@@ -9,6 +9,14 @@ export interface Project {
 
 export const projects: Project[] = [
   {
+    title: "Kitchen Rush",
+    description:
+      "A benchmark for fast and accurate LLM tool calling — agents cook in an Overcooked-style kitchen where taking too long to think can hurt performance.",
+    image: "/images/projects/kitchen-rush.gif",
+    github: "https://github.com/bassimeledath/kitchen-rush",
+    tags: ["Python", "AI", "Benchmark"],
+  },
+  {
     title: "Dispatch",
     description:
       "10x your Claude Code context window. Your session becomes a lightweight orchestrator while workers execute in their own full contexts.",
