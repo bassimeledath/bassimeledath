@@ -9,6 +9,14 @@ export interface Project {
 
 export const projects: Project[] = [
   {
+    title: "PDFandMe",
+    description:
+      "Adobe scammed my wife and me by silently charging us for their PDF editing product. So I built a free version of it with Fable.",
+    image: "/images/projects/pdfandme.gif",
+    link: "https://pdfandme.com/",
+    tags: ["AI", "Fable", "PDF"],
+  },
+  {
     title: "Kitchen Rush",
     description:
       "A benchmark for fast and accurate LLM tool calling — agents cook in an Overcooked-style kitchen where taking too long to think can hurt performance.",
