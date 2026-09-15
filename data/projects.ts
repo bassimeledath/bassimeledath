@@ -9,6 +9,14 @@ export interface Project {
 
 export const projects: Project[] = [
   {
+    title: "Karen",
+    description:
+      "App feedback as easy as complaining. Point at your React app, speak what should change, and hand your coding agent the context.",
+    image: "/images/projects/karen.gif",
+    github: "https://github.com/bassimeledath/karen",
+    tags: ["React", "Voice", "Developer Tools"],
+  },
+  {
     title: "PDFandMe",
     description:
       "Adobe scammed my wife and me by silently charging us for their PDF editing product. So I built a free version of it with Fable.",
