@@ -2,12 +2,22 @@ export interface Project {
   title: string;
   description: string;
   image?: string;
+  imageFit?: "cover" | "contain";
   link?: string;
   github?: string;
   tags: string[];
 }
 
 export const projects: Project[] = [
+  {
+    title: "Karen",
+    description:
+      "App feedback as easy as complaining. Point at your React app, speak what should change, and hand your coding agent the context.",
+    image: "/images/projects/karen.gif",
+    imageFit: "contain",
+    github: "https://github.com/bassimeledath/karen",
+    tags: ["React", "Voice", "Developer Tools"],
+  },
   {
     title: "PDFandMe",
     description:

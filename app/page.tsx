@@ -82,7 +82,8 @@ export default function HomePage() {
                     alt={project.title}
                     fill
                     sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                    className="object-cover transition-opacity group-hover:opacity-90"
+                    className="transition-opacity group-hover:opacity-90"
+                    style={{ objectFit: project.imageFit ?? "cover" }}
                     unoptimized={project.image.endsWith(".gif")}
                   />
                 </div>
