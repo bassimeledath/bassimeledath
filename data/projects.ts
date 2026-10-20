@@ -39,7 +39,6 @@ export const projects: Project[] = [
     description:
       "10x your Claude Code context window. Your session becomes a lightweight orchestrator while workers execute in their own full contexts.",
     image: "/images/projects/dispatch.png",
-    link: "/blog/dispatch",
     github: "https://github.com/bassimeledath/dispatch",
     tags: ["Claude Code", "AI", "Developer Tools"],
   },
