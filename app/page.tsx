@@ -6,7 +6,7 @@ import { projects } from "@/data/projects";
 export default function HomePage() {
   return (
     <div className="py-16">
-      <h1 className="sr-only">Bassim Eledath — AI Engineer</h1>
+      <h1 className="sr-only">Bassim Eledath — Head of AI Engineering @ Asurion</h1>
       {/* About */}
       <div className="flex flex-col gap-12 md:flex-row md:items-center">
         <div className="animate-fade-up flex-shrink-0">
@@ -21,7 +21,7 @@ export default function HomePage() {
         </div>
         <div className="max-w-xl">
           <p className="animate-fade-up [animation-delay:100ms] text-lg text-muted">
-            AI Engineer
+            Head of AI Engineering @ Asurion
           </p>
           <div className="animate-fade-up [animation-delay:150ms] mt-3 flex gap-4">
             <a
@@ -53,9 +53,6 @@ export default function HomePage() {
             </a>
           </div>
           <div className="animate-fade-up [animation-delay:200ms] mt-6 space-y-4 text-foreground/85 leading-relaxed">
-            <p>
-              Weaver of LLMs, Tamer of Hallucinations, Lord of the Context Window, He Who Ships.
-            </p>
             <p>
               I eat aggressively spicy food, can't sit still when music is playing, and have never once arrived somewhere without Google Maps.
             </p>
