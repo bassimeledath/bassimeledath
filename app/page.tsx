@@ -10,7 +10,7 @@ export default function HomePage() {
       <h1 className="sr-only">Bassim Eledath — Head of AI Engineering @ Asurion</h1>
       {/* About */}
       <div className="flex flex-col gap-8 md:flex-row md:items-center md:gap-12">
-        <div className="animate-fade-up w-[325px] max-w-full flex-shrink-0 md:w-[337.5px]">
+        <div className="animate-fade-up w-full max-w-[325px] flex-shrink-0 self-center md:w-[337.5px] md:max-w-none md:self-auto">
           <WhackABassim />
         </div>
         <div className="max-w-xl">
