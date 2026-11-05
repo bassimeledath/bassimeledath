@@ -1,23 +1,17 @@
 import Image from "next/image";
+import WhackABassim from "@/components/WhackABassim";
 import { FaGithub, FaLinkedin, FaXTwitter } from "react-icons/fa6";
 import { FaExternalLinkAlt } from "react-icons/fa";
 import { projects } from "@/data/projects";
 
 export default function HomePage() {
   return (
-    <div className="py-16">
+    <div className="py-10">
       <h1 className="sr-only">Bassim Eledath — Head of AI Engineering @ Asurion</h1>
       {/* About */}
-      <div className="flex flex-col gap-12 md:flex-row md:items-center">
-        <div className="animate-fade-up flex-shrink-0">
-          <Image
-            src="/profile.jpeg"
-            alt="Bassim Eledath"
-            width={220}
-            height={220}
-            className="w-40 md:w-[220px] rounded-full shadow-lg shadow-foreground/5"
-            priority
-          />
+      <div className="flex flex-col gap-8 md:flex-row md:items-center md:gap-12">
+        <div className="animate-fade-up w-[325px] max-w-full flex-shrink-0 md:w-[337.5px]">
+          <WhackABassim />
         </div>
         <div className="max-w-xl">
           <p className="animate-fade-up [animation-delay:100ms] text-lg text-muted">
@@ -62,7 +56,7 @@ export default function HomePage() {
 
       {/* Projects */}
       <div className="mt-14">
-        <h2 className="font-serif text-2xl font-medium tracking-tight text-foreground">
+        <h2 id="projects" className="font-serif text-2xl font-medium tracking-tight text-foreground">
           Projects
         </h2>
         <div className="mt-8 grid grid-cols-1 gap-x-8 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
@@ -74,15 +68,23 @@ export default function HomePage() {
             >
               {project.image && (
                 <div className="relative h-48 w-full overflow-hidden rounded-md">
-                  <Image
-                    src={project.image}
-                    alt={project.title}
-                    fill
-                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                    className="transition-opacity group-hover:opacity-90"
-                    style={{ objectFit: project.imageFit ?? "cover" }}
-                    unoptimized={project.image.endsWith(".gif")}
-                  />
+                  <picture>
+                    {project.imagePoster && (
+                      <source
+                        media="(prefers-reduced-motion: reduce)"
+                        srcSet={project.imagePoster}
+                      />
+                    )}
+                    <Image
+                      src={project.image}
+                      alt={project.title}
+                      fill
+                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                      className="transition-opacity group-hover:opacity-90"
+                      style={{ objectFit: project.imageFit ?? "cover" }}
+                      unoptimized={project.image.endsWith(".gif")}
+                    />
+                  </picture>
                 </div>
               )}
               <div className="mt-3 flex items-center gap-2">
