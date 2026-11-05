@@ -1,0 +1,58 @@
+.root {
+  --pixel-ink: #635b52;
+  --pixel-shell: #e8dfd0;
+  --pixel-trim: #b5a38e;
+  --pixel-deck: #d8cdba;
+  --pixel-screen: #332f35;
+  --pixel-title: #edcf92;
+  --pixel-label: #5c5146;
+  --pixel-hole: #4c4650;
+  --pixel-dim: #b6a68e;
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+:global(.dark) .root {
+  --pixel-ink: #a59479;
+  --pixel-shell: #302c2b;
+  --pixel-trim: #665d50;
+  --pixel-deck: #3a3540;
+  --pixel-screen: #211f22;
+  --pixel-title: #d7bd8b;
+  --pixel-label: #d7bd8b;
+  --pixel-hole: #1b191e;
+  --pixel-dim: #544d45;
+}
+.root[data-mallet="1"] {
+  cursor: none;
+}
+.root:focus-visible {
+  outline: 2px solid rgb(var(--accent));
+  outline-offset: 4px;
+}
+.control {
+  cursor: pointer;
+  outline: none;
+}
+.control:focus-visible > rect:not(.hitArea) {
+  stroke: rgb(var(--accent));
+  stroke-width: 3px;
+}
+.control:hover > rect:not(.hitArea) {
+  opacity: 0.8;
+}
+.control[aria-disabled="true"] {
+  cursor: default;
+}
+.control[aria-disabled="true"] > rect:not(.hitArea) {
+  opacity: 0.55;
+}
+
+.hitArea {
+  pointer-events: all;
+}

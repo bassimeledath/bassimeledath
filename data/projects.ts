@@ -3,12 +3,24 @@ export interface Project {
   description: string;
   image?: string;
   imageFit?: "cover" | "contain";
+  imagePoster?: string;
   link?: string;
   github?: string;
   tags: string[];
 }
 
 export const projects: Project[] = [
+  {
+    title: "Betterloop",
+    description:
+      "Letterloop was costing my friend group $60 a year so I recreated it — Betterloop turns your friends’ answers, photos, and life updates into a private newsletter for everyone to enjoy.",
+    image: "/images/projects/betterloop-letter.gif",
+    imagePoster: "/images/projects/betterloop-letter-poster.png",
+    imageFit: "contain",
+    link: "https://betterloop.vocabulous.app",
+    github: "https://github.com/bassimeledath/betterloop",
+    tags: ["React", "Cloudflare", "Newsletters"],
+  },
   {
     title: "Karen",
     description:
