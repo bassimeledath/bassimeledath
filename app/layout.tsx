@@ -20,6 +20,24 @@ export const metadata: Metadata = {
   metadataBase: new URL("https://www.bassimeledath.com"),
   title: "Bassim Eledath",
   description: "AI Engineer — building with LLMs, machine learning, and web technologies.",
+  openGraph: {
+    title: "Bassim Eledath",
+    description: "Building with AI. Writing what I learn. Engineering, experiments, and side projects.",
+    siteName: "Bassim Eledath",
+    type: "website",
+    images: [{
+      url: "/site-preview.png",
+      width: 1200,
+      height: 630,
+      alt: "Bassim Eledath — building with AI and writing what I learn",
+    }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Bassim Eledath",
+    description: "Building with AI. Writing what I learn. Engineering, experiments, and side projects.",
+    images: ["/site-preview.png"],
+  },
   icons: {
     icon: "/favicon.png",
   },
