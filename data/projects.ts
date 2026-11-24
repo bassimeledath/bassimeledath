@@ -13,8 +13,8 @@ export const projects: Project[] = [
   {
     title: "Open Eval Standard",
     description:
-      "A YAML format for every AI agent eval. Keep test cases and scoring rules in your repo so teammates can review them in a pull request and run the same evals.",
-    image: "/images/projects/open-eval-standard-capitals.webp",
+      "Test your running agent through a command or URL. OES checks its replies, tool calls, and final state, so you can catch regressions in CI.",
+    image: "/images/projects/open-eval-standard.svg",
     imageFit: "contain",
     github: "https://github.com/bassimeledath/open-eval-standard",
     tags: ["AI", "YAML", "Developer Tools"],
