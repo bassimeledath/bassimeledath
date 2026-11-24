@@ -11,6 +11,15 @@ export interface Project {
 
 export const projects: Project[] = [
   {
+    title: "Open Eval Standard",
+    description:
+      "A YAML format for every AI agent eval. Keep test cases and scoring rules in your repo so teammates can review them in a pull request and run the same evals.",
+    image: "/images/projects/open-eval-standard-capitals.webp",
+    imageFit: "contain",
+    github: "https://github.com/bassimeledath/open-eval-standard",
+    tags: ["AI", "YAML", "Developer Tools"],
+  },
+  {
     title: "Betterloop",
     description:
       "Letterloop was costing my friend group $60 a year so I recreated it — Betterloop turns your friends’ answers, photos, and life updates into a private newsletter for everyone to enjoy.",
